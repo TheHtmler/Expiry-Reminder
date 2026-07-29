@@ -128,7 +128,7 @@ expiry-reminder/
 - Consumes: 微信小程序 AppID `wxb8bd2ab35c41a7cd`。
 - Produces: `npm run build`、`npm test`、`npm run typecheck` 三个稳定命令；后续任务均以此工程结构为基础。
 
-- [ ] **Step 1: 写工程配置失败测试**
+- [x] **Step 1: 写工程配置失败测试**
 
 ```ts
 import { readFileSync } from "node:fs";
@@ -154,13 +154,13 @@ describe("微信小程序工程配置", () => {
 });
 ```
 
-- [ ] **Step 2: 运行测试并确认失败**
+- [x] **Step 2: 运行测试并确认失败**
 
 Run: `npm test -- tests/integration/project-config.test.ts`
 
 Expected: FAIL，原因是 `package.json` 或 `project.config.json` 不存在。
 
-- [ ] **Step 3: 创建最小工程配置**
+- [x] **Step 3: 创建最小工程配置**
 
 `package.json` 使用以下脚本和开发依赖：
 
@@ -297,7 +297,7 @@ Page({
 </view>
 ```
 
-- [ ] **Step 4: 创建构建脚本和其余三个空页面**
+- [x] **Step 4: 创建构建脚本和其余三个空页面**
 
 每个空页面必须包含 `.ts`、`.json`、`.wxml`、`.wxss` 四个文件，`.ts` 内容统一为：
 
@@ -353,7 +353,7 @@ if (existsSync(entry)) {
 export {};
 ```
 
-- [ ] **Step 5: 安装依赖并运行构建**
+- [x] **Step 5: 安装依赖并运行构建**
 
 Run: `npm install`
 
@@ -361,13 +361,13 @@ Run: `npm run build && npm run typecheck`
 
 Expected: 两条命令均退出码为 0。
 
-- [ ] **Step 6: 运行测试**
+- [x] **Step 6: 运行测试**
 
 Run: `npm test -- tests/integration/project-config.test.ts`
 
 Expected: 2 tests PASS。
 
-- [ ] **Step 7: 提交**
+- [x] **Step 7: 提交**
 
 ```bash
 git add .gitignore package.json package-lock.json tsconfig.json vitest.config.ts project.config.json miniprogram packages/domain/src/index.ts packages/contracts/src/index.ts scripts tests/integration/project-config.test.ts

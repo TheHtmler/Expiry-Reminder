@@ -1,0 +1,26 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/items/index",
+    "pages/reminders/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "到期咯",
+    "navigationBarBackgroundColor": "#F7F8F5",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F8F5"
+  },
+  "tabBar": {
+    "color": "#687068",
+    "selectedColor": "#D85F42",
+    "list": [
+      { "pagePath": "pages/home/index", "text": "首页" },
+      { "pagePath": "pages/items/index", "text": "物品" },
+      { "pagePath": "pages/reminders/index", "text": "提醒" },
+      { "pagePath": "pages/profile/index", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
