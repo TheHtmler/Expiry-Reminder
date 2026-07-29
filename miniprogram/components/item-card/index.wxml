@@ -1,0 +1,11 @@
+<view class="card">
+  <view class="main" bindtap="open">
+    <view class="title-row"><view class="title-main"><view class="status-dot dot-{{item.status}}"></view><text class="name">{{item.name}}</text></view><text class="status status-{{item.status}}"><block wx:if="{{item.status === 'expired'}}">已过期</block><block wx:elif="{{item.status === 'due_today'}}">今日到期</block><block wx:elif="{{item.status === 'near_expiry'}}">即将到期</block><block wx:elif="{{item.status === 'processed'}}">已处理</block><block wx:else>正常</block></text></view>
+    <view class="date-row"><text class="date-label">最近日期</text><text class="date">{{item.nearestEventDate}}</text></view>
+    <text wx:if="{{item.brand || item.specification}}" class="meta">{{item.brand}} {{item.specification}}</text>
+  </view>
+  <view class="actions">
+    <quantity-stepper quantity="{{item.quantity}}" bind:change="onQuantityChange" />
+    <button wx:if="{{item.status !== 'processed'}}" class="process" bindtap="process">处理</button>
+  </view>
+</view>

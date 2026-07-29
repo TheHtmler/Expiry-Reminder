@@ -1,9 +1,70 @@
 page {
-  background: #f7f8f5;
-  color: #242824;
-  font-size: 32rpx;
+  --ink: #1d241f;
+  --muted: #6d756f;
+  --line: #dde1dc;
+  --surface: #ffffff;
+  --canvas: #f5f5f2;
+  --accent: #d9523b;
+  --accent-dark: #a83d2d;
+  --green: #355b48;
+  --green-soft: #e4eee8;
+  --amber: #a45e18;
+  --amber-soft: #f8ead8;
+  --red: #a8332a;
+  --red-soft: #f7e5e2;
+  min-height: 100%;
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 30rpx;
+  letter-spacing: 0;
 }
 
-.page {
-  padding: 32rpx;
-}
+button, input, textarea, picker { font: inherit; letter-spacing: 0; }
+
+.page { box-sizing: border-box; min-height: 100vh; padding: 24rpx 32rpx 48rpx; }
+.page-heading { display: flex; align-items: baseline; justify-content: space-between; padding: 14rpx 0 30rpx; }
+.page-title { display: block; font-size: 44rpx; font-weight: 700; line-height: 1.2; }
+.page-subtitle { display: block; margin-top: 8rpx; color: var(--muted); font-size: 25rpx; line-height: 1.5; }
+.section { padding: 28rpx 0; border-bottom: 1rpx solid var(--line); }
+.section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18rpx; }
+.section-heading text:first-child { font-size: 30rpx; font-weight: 650; }
+.section-caption { color: var(--muted); font-size: 24rpx; }
+
+.field { margin: 22rpx 0; }
+.field-label { display: block; margin-bottom: 10rpx; color: #4f574f; font-size: 25rpx; font-weight: 550; }
+.input { box-sizing: border-box; width: 100%; min-height: 88rpx; padding: 21rpx 22rpx; border: 1rpx solid #cbd2c8; border-radius: 8rpx; background: #fafbf9; color: var(--ink); }
+.input:focus { border-color: #75907c; }
+
+.primary-button { min-height: 88rpx; margin-top: 28rpx; border-radius: 8rpx; background: var(--accent); color: #fff; font-size: 28rpx; font-weight: 650; }
+.primary-button::after { border: 0; }
+.secondary-button { min-height: 80rpx; border: 1rpx solid #cbd2c8; border-radius: 8rpx; background: var(--surface); color: #3f473f; font-size: 27rpx; }
+.secondary-button::after { border: 0; }
+.danger-button { border: 1rpx solid #d7a9a3; background: #fff; color: var(--red); }
+.text-button { width: auto; min-height: 60rpx; margin: 0; padding: 0 12rpx; background: transparent; color: var(--accent-dark); font-size: 25rpx; }
+.text-button::after { border: 0; }
+
+.muted { color: var(--muted); font-size: 25rpx; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; }
+.list-surface { overflow: hidden; border: 1rpx solid var(--line); border-radius: 8rpx; background: var(--surface); }
+.list-row { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; min-height: 96rpx; padding: 0 24rpx; border-bottom: 1rpx solid #e8ebe6; }
+.list-row:last-child { border-bottom: 0; }
+.row-title { display: block; font-weight: 600; }
+.row-meta { display: block; margin-top: 5rpx; color: var(--muted); font-size: 23rpx; }
+.row-arrow { flex: none; color: #9aa19a; font-size: 36rpx; }
+
+.empty-state { padding: 76rpx 28rpx; color: var(--muted); text-align: center; }
+.empty-mark { display: flex; align-items: center; justify-content: center; width: 88rpx; height: 88rpx; margin: 0 auto 24rpx; border-radius: 50%; background: var(--green-soft); color: var(--green); font-size: 38rpx; font-weight: 700; }
+.empty-icon { display: block; width: 76rpx; height: 76rpx; margin: 0 auto 22rpx; }
+.empty-title { display: block; margin-top: 18rpx; color: #303933; font-size: 29rpx; font-weight: 650; }
+.empty-copy { display: block; max-width: 500rpx; margin: 10rpx auto 0; font-size: 24rpx; line-height: 1.55; }
+.empty-actions { display: flex; justify-content: center; gap: 16rpx; margin-top: 30rpx; }
+.empty-action { width: auto; min-width: 190rpx; min-height: 72rpx; margin: 28rpx auto 0; padding: 0 28rpx; border-radius: 8rpx; font-size: 26rpx; font-weight: 600; line-height: 72rpx; }
+.empty-actions .empty-action { margin: 0; }
+.empty-action::after { border: 0; }
+.empty-action.primary { background: var(--accent); color: #fff; }
+.empty-action.secondary { border: 1rpx solid #cfd5ce; background: #fff; color: #3f4942; }
+
+.error-state { padding: 44rpx 28rpx; border: 1rpx solid #e3b8b1; border-radius: 8rpx; background: #fff8f6; color: var(--red); text-align: center; }
+.error-state button { width: auto; min-width: 180rpx; min-height: 68rpx; margin: 22rpx auto 0; border: 1rpx solid #dab0aa; border-radius: 8rpx; background: #fff; color: var(--red); font-size: 25rpx; line-height: 68rpx; }
+.error-state button::after { border: 0; }
+.safe-bottom { padding-bottom: calc(48rpx + env(safe-area-inset-bottom)); }

@@ -1,0 +1,10 @@
+<view class="page">
+  <view class="page-heading"><text class="page-title">选择家庭</text><text class="page-subtitle">当前账号加入了 {{households.length}} 个家庭</text></view>
+  <view class="list-surface">
+    <view wx:for="{{households}}" wx:key="id" class="household list-row" data-id="{{item.id}}" bindtap="onSwitch">
+      <view class="household-main"><view class="household-mark">家</view><view><text class="name">{{item.name}}</text><text class="role">{{item.role === 'admin' ? '管理员' : '成员'}}</text></view></view>
+      <text class="selected" wx:if="{{item.id === currentId}}">✓</text><text wx:else class="row-arrow">›</text>
+    </view>
+  </view>
+  <button class="secondary-button create-button" bindtap="onCreateOrJoin">＋ 创建或加入家庭</button>
+</view>

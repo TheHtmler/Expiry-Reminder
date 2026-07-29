@@ -1,0 +1,4 @@
+<view class="household-switcher" bindtap="openHouseholdPicker" role="button" aria-label="切换家庭">
+  <text class="name">{{currentHousehold.name || '选择家庭'}}</text>
+  <text class="arrow">⌄</text>
+</view>

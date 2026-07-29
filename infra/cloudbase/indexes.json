@@ -1,0 +1,70 @@
+[
+  {
+    "collection": "users",
+    "name": "uniq_user_openid",
+    "unique": true,
+    "fields": [{ "field": "openId", "order": "asc" }]
+  },
+  {
+    "collection": "household_members",
+    "name": "uniq_household_user",
+    "unique": true,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "userId", "order": "asc" }
+    ]
+  },
+  {
+    "collection": "household_invites",
+    "name": "uniq_token_hash",
+    "unique": true,
+    "fields": [{ "field": "tokenHash", "order": "asc" }]
+  },
+  {
+    "collection": "categories",
+    "name": "household_system_category",
+    "unique": false,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "systemKey", "order": "asc" }
+    ]
+  },
+  {
+    "collection": "locations",
+    "name": "uniq_household_location_name",
+    "unique": true,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "name", "order": "asc" }
+    ]
+  },
+  {
+    "collection": "items",
+    "name": "household_active_nearest_event",
+    "unique": false,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "deletedAt", "order": "asc" },
+      { "field": "nearestEventDate", "order": "asc" }
+    ]
+  },
+  {
+    "collection": "items",
+    "name": "household_category_nearest_event",
+    "unique": false,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "categoryId", "order": "asc" },
+      { "field": "nearestEventDate", "order": "asc" }
+    ]
+  },
+  {
+    "collection": "items",
+    "name": "household_barcode",
+    "unique": false,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "barcode", "order": "asc" }
+    ]
+  }
+]

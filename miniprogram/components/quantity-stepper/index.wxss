@@ -1,0 +1,4 @@
+.stepper { display: grid; grid-template-columns: 56rpx 64rpx 56rpx; align-items: center; width: 176rpx; }
+.step { box-sizing: border-box; width: 56rpx; height: 56rpx; margin: 0; padding: 0; border: 1rpx solid #cbd1c9; border-radius: 8rpx; background: #fff; font-size: 34rpx; line-height: 52rpx; }
+.step::after { border: 0; }
+.quantity { text-align: center; font-variant-numeric: tabular-nums; }

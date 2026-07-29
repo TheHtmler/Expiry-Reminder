@@ -1,1 +1,1 @@
-{}
+{ "usingComponents": { "item-card": "/components/item-card/index" } }

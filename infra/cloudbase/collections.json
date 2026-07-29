@@ -1,0 +1,13 @@
+{
+  "collections": [
+    "users",
+    "households",
+    "household_members",
+    "household_invites",
+    "idempotency_keys",
+    "categories",
+    "locations",
+    "items",
+    "item_events"
+  ]
+}

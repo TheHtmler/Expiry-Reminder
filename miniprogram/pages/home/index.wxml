@@ -1,3 +1,17 @@
-<view class="page">
-  <text>{{title}}</text>
+<view class="page home-page">
+  <view class="home-header">
+    <view class="brand-lockup"><view class="brand-mark">期</view><text class="brand">到期咯</text></view>
+    <household-switcher current-household="{{currentHousehold}}" />
+  </view>
+  <view class="today-intro">
+    <text class="eyebrow">今日概览</text>
+    <text class="headline">{{priorityItems.length > 0 ? priorityItems.length + ' 件物品需要留意' : '今天都在掌控中'}}</text>
+  </view>
+  <status-summary expired="{{summary.expired}}" due-today="{{summary.dueToday}}" near-expiry="{{summary.nearExpiry}}" />
+  <view class="section-header"><view><text class="section-kicker">按紧急程度排序</text><text class="section-title">优先处理</text></view><text class="count-label">{{priorityItems.length}} 件</text></view>
+  <view wx:if="{{error}}" class="error-state"><text>{{error}}</text><button bindtap="retry">重新连接</button></view>
+  <view wx:elif="{{loading && priorityItems.length === 0}}" class="empty-state"><icon type="waiting" size="32" color="#587162" /><text class="empty-title">正在整理物品</text></view>
+  <view wx:elif="{{priorityItems.length === 0}}" class="empty-state home-empty"><image class="empty-icon" src="/assets/ui/circle-check.png" mode="aspectFit" /><text class="empty-title">没有需要立即处理的物品</text><text class="empty-copy">从记录第一件物品开始</text><view class="empty-actions"><button class="empty-action primary" bindtap="openForm">添加物品</button><button class="empty-action secondary" bindtap="openItems">查看全部</button></view></view>
+  <item-card wx:for="{{priorityItems}}" wx:key="id" item="{{item}}" bind:open="openItem" bind:quantitychange="onQuantityChange" bind:process="onProcess" />
+  <button class="add-fab" bindtap="openForm" aria-label="手动添加物品"><image src="/assets/ui/plus-white.png" mode="aspectFit" /></button>
 </view>

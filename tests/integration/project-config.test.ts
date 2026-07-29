@@ -11,7 +11,7 @@ describe("微信小程序工程配置", () => {
 
   it("注册四个首期页面", () => {
     const app = JSON.parse(readFileSync("miniprogram/app.json", "utf8"));
-    expect(app.pages).toEqual([
+    expect(app.pages.slice(0, 4)).toEqual([
       "pages/home/index",
       "pages/items/index",
       "pages/reminders/index",

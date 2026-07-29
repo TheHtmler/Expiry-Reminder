@@ -3,7 +3,16 @@
     "pages/home/index",
     "pages/items/index",
     "pages/reminders/index",
-    "pages/profile/index"
+    "pages/profile/index",
+    "pages/onboarding/index",
+    "pages/households/index",
+    "pages/household-members/index",
+    "pages/household-settings/index",
+    "pages/category-settings/index",
+    "pages/location-settings/index",
+    "pages/item-form/index",
+    "pages/item-detail/index",
+    "pages/recycle-bin/index"
   ],
   "window": {
     "navigationBarTitleText": "到期咯",
@@ -15,10 +24,10 @@
     "color": "#687068",
     "selectedColor": "#D85F42",
     "list": [
-      { "pagePath": "pages/home/index", "text": "首页" },
-      { "pagePath": "pages/items/index", "text": "物品" },
-      { "pagePath": "pages/reminders/index", "text": "提醒" },
-      { "pagePath": "pages/profile/index", "text": "我的" }
+      { "pagePath": "pages/home/index", "text": "首页", "iconPath": "assets/tabbar/house.png", "selectedIconPath": "assets/tabbar/house-active.png" },
+      { "pagePath": "pages/items/index", "text": "物品", "iconPath": "assets/tabbar/package.png", "selectedIconPath": "assets/tabbar/package-active.png" },
+      { "pagePath": "pages/reminders/index", "text": "提醒", "iconPath": "assets/tabbar/bell.png", "selectedIconPath": "assets/tabbar/bell-active.png" },
+      { "pagePath": "pages/profile/index", "text": "我的", "iconPath": "assets/tabbar/user-round.png", "selectedIconPath": "assets/tabbar/user-round-active.png" }
     ]
   },
   "style": "v2",

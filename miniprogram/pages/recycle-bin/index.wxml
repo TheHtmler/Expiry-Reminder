@@ -1,0 +1,6 @@
+<view class="page">
+  <view class="page-heading"><text class="page-title">最近删除</text><text class="page-subtitle">物品删除后保留 30 天</text></view>
+  <view wx:if="{{loading && items.length === 0}}" class="empty-state"><view class="empty-mark">…</view><text class="empty-title">正在加载</text></view>
+  <view wx:elif="{{items.length === 0}}" class="empty-state"><view class="empty-mark">✓</view><text class="empty-title">最近没有删除记录</text></view>
+  <view class="list-surface" wx:if="{{items.length > 0}}"><view wx:for="{{items}}" wx:key="id" class="deleted-item list-row"><view><text class="name">{{item.name}}</text><text class="date">可恢复至 {{item.recoverableUntil}}</text></view><button data-id="{{item.id}}" bindtap="restore">恢复</button></view></view>
+</view>

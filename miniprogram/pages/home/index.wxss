@@ -1,1 +1,16 @@
-
+.home-page { padding-bottom: 140rpx; }
+.home-header { display: flex; align-items: center; justify-content: space-between; gap: 24rpx; padding: 10rpx 0 30rpx; }
+.brand-lockup { display: flex; align-items: center; gap: 12rpx; }
+.brand-mark { display: flex; align-items: center; justify-content: center; width: 48rpx; height: 48rpx; border-radius: 8rpx; background: #d9523b; color: #fff; font-size: 24rpx; font-weight: 750; }
+.brand { display: block; color: #283029; font-size: 28rpx; font-weight: 700; }
+.today-intro { padding: 16rpx 0 6rpx; }
+.eyebrow { display: block; color: #7a827c; font-size: 23rpx; font-weight: 600; }
+.headline { display: block; max-width: 620rpx; margin-top: 10rpx; font-size: 46rpx; font-weight: 750; line-height: 1.25; }
+.section-header { display: flex; align-items: flex-end; justify-content: space-between; margin: 42rpx 0 20rpx; }
+.section-kicker { display: block; margin-bottom: 6rpx; color: #7a827c; font-size: 22rpx; }
+.section-title { display: block; font-size: 34rpx; font-weight: 700; }
+.count-label { color: #747b74; font-size: 25rpx; }
+.home-empty { padding-top: 54rpx; }
+.add-fab { position: fixed; right: 34rpx; bottom: 150rpx; z-index: 10; display: flex; align-items: center; justify-content: center; width: 92rpx; height: 92rpx; margin: 0; padding: 0; border-radius: 50%; background: #d9523b; box-shadow: 0 10rpx 24rpx rgba(80, 42, 32, .22); }
+.add-fab image { width: 46rpx; height: 46rpx; }
+.add-fab::after { border: 0; }

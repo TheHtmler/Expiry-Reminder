@@ -1,0 +1,6 @@
+.household { min-height: 112rpx; }
+.household-main { display: flex; align-items: center; gap: 18rpx; }.household-mark { display: flex; align-items: center; justify-content: center; width: 58rpx; height: 58rpx; border-radius: 8rpx; background: #e4ede4; color: #3f684f; font-size: 22rpx; font-weight: 700; }
+.name { display: block; font-weight: 600; }
+.role { color: #747b74; font-size: 24rpx; }
+.selected { color: #d85f42; font-weight: 700; }
+.create-button { margin-top: 24rpx; }

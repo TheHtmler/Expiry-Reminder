@@ -11,8 +11,17 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "useCompilerPlugins": ["typescript"],
-    "minifyWXML": true
+    "useCompilerPlugins": [
+      "typescript"
+    ],
+    "minifyWXML": true,
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false
   },
   "compileType": "miniprogram",
   "projectname": "expiry-reminder",

@@ -1,0 +1,18 @@
+<view class="page">
+  <view class="welcome"><view class="app-mark">期</view><text class="welcome-title">建立家庭空间</text></view>
+  <view class="segmented">
+    <button class="segment {{mode === 'create' ? 'active' : ''}}" data-mode="create" bindtap="setMode">创建家庭</button>
+    <button class="segment {{mode === 'join' ? 'active' : ''}}" data-mode="join" bindtap="setMode">加入家庭</button>
+  </view>
+  <view class="form-surface">
+    <view wx:if="{{mode === 'create'}}" class="field">
+      <text class="field-label">家庭名称</text>
+      <input class="input" value="{{name}}" maxlength="24" bindinput="onNameInput" placeholder="例如：我们的家" />
+    </view>
+    <view wx:else class="field">
+      <text class="field-label">邀请口令</text>
+      <input class="input" value="{{token}}" bindinput="onTokenInput" placeholder="输入家庭管理员分享的口令" />
+    </view>
+    <button class="primary-button" loading="{{loading}}" disabled="{{loading}}" bindtap="onSubmit">继续</button>
+  </view>
+</view>

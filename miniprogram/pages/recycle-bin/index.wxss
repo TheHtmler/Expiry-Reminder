@@ -1,0 +1,3 @@
+.deleted-item { min-height: 108rpx; }
+.name, .date { display: block; }.name { font-weight: 600; }.date { margin-top: 8rpx; color: #747b74; font-size: 23rpx; }
+.deleted-item button { width: 112rpx; margin: 0; border: 1rpx solid #cbd2c8; background: #fff; color: #3f684f; font-size: 24rpx; }.deleted-item button::after { border: 0; }

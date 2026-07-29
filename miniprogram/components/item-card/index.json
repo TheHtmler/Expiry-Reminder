@@ -1,0 +1,1 @@
+{ "component": true, "usingComponents": { "quantity-stepper": "/components/quantity-stepper/index" } }

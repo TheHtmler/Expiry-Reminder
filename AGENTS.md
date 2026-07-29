@@ -10,6 +10,7 @@
 2. `docs/superpowers/specs/2026-07-29-expiry-reminder-design.md`
 3. `docs/superpowers/plans/2026-07-29-expiry-reminder-mvp.md`
 4. `docs/handoff/ai-implementation-guide.md`
+5. `docs/handoff/implementation-progress.md`
 
 不得跳过设计确认或自行扩大首期范围。
 
@@ -57,6 +58,8 @@
 - 测试失败时先定位原因，不删除或弱化测试来换取通过。
 - 不提交 TODO、占位实现、模拟成功响应或跳过验证的代码。
 - 修改跨任务接口时同步更新协议、调用方、测试和实施文档。
+- 每次实现或调整功能后，更新 `docs/handoff/implementation-progress.md`，记录实际行为、
+  修改文件、验证结果、未完成事项和下一步，不依赖聊天记录保存项目状态。
 
 ## 数据与安全
 
@@ -87,3 +90,4 @@
 - 无敏感信息进入 Git。
 - 实际变更与设计一致。
 - 文档和任务勾选状态同步更新。
+- 实施进度记录已同步本次功能、验证结果和剩余事项。

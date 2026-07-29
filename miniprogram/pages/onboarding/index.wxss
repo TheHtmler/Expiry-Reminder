@@ -1,0 +1,8 @@
+.welcome { padding: 52rpx 0 38rpx; text-align: center; }
+.app-mark { display: flex; align-items: center; justify-content: center; width: 92rpx; height: 92rpx; margin: 0 auto 24rpx; border-radius: 8rpx; background: #d85f42; color: #fff; font-size: 42rpx; font-weight: 750; }
+.welcome-title { display: block; font-size: 38rpx; font-weight: 700; }.welcome-copy { display: block; margin-top: 10rpx; color: #697169; font-size: 25rpx; }
+.segmented { display: grid; grid-template-columns: 1fr 1fr; padding: 6rpx; border-radius: 8rpx; background: #e7ebe5; }
+.segment { margin: 0; background: transparent; font-size: 28rpx; }
+.segment::after { border: 0; }
+.segment.active { background: #fff; color: #b94c36; font-weight: 600; }
+.form-surface { margin-top: 24rpx; padding: 8rpx 24rpx 28rpx; border: 1rpx solid #dce1da; border-radius: 8rpx; background: #fff; }

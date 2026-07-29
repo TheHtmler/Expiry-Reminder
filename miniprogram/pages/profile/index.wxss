@@ -1,1 +1,10 @@
-
+.family-banner { display: flex; align-items: center; gap: 20rpx; padding: 24rpx; border: 1rpx solid #dce1da; border-radius: 8rpx; background: #fff; }
+.family-mark { display: flex; align-items: center; justify-content: center; flex: none; width: 72rpx; height: 72rpx; border-radius: 8rpx; background: #f7e7e3; }
+.family-mark image { width: 46rpx; height: 46rpx; }
+.family-main { min-width: 0; flex: 1; }.family-label { display: block; color: #697169; font-size: 22rpx; }
+.role-chip { flex: none; padding: 7rpx 12rpx; border-radius: 6rpx; background: #f7eadc; color: #95571e; font-size: 22rpx; }
+.menu-section { margin-top: 34rpx; }.menu-label { display: block; margin: 0 0 12rpx 4rpx; color: #697169; font-size: 24rpx; }
+.menu-main { display: flex; align-items: center; gap: 18rpx; }
+.menu-icon { display: flex; align-items: center; justify-content: center; width: 52rpx; height: 52rpx; border-radius: 8rpx; }
+.menu-icon image { width: 32rpx; height: 32rpx; }
+.menu-icon.green { background: #e4ede4; color: #3f684f; }.menu-icon.amber { background: #f7eadc; color: #95571e; }.menu-icon.coral { background: #f6e4e1; color: #a94531; }.menu-icon.gray { background: #ecefeb; color: #606860; }

@@ -1,0 +1,10 @@
+<view class="page detail-page" wx:if="{{item && !error}}">
+  <view class="detail-header"><view class="title-main"><text class="status status-{{item.status}}">{{item.status === 'expired' ? '已过期' : item.status === 'due_today' ? '今日到期' : item.status === 'near_expiry' ? '即将到期' : item.status === 'processed' ? '已处理' : '正常'}}</text><text class="name">{{item.name}}</text><text class="meta">最后更新 {{item.updatedAt}}</text></view><button class="edit-button" bindtap="edit" aria-label="编辑物品">编辑</button></view>
+  <view class="quantity-panel"><view><text class="panel-label">当前数量</text><view><text class="quantity-number">{{item.quantity}}</text><text class="unit">{{item.unit}}</text></view></view><quantity-stepper quantity="{{item.quantity}}" bind:change="onQuantityChange" /></view>
+  <view class="detail-section"><view class="section-heading"><text>日期事件</text><text class="section-caption">{{item.events.length}} 项</text></view><view class="timeline"><view wx:for="{{item.events}}" wx:key="id" class="event-row"><view class="event-dot"></view><view><text class="event-type">{{item.type === 'production' ? '生产日期' : item.type === 'expiry' ? '到期日期' : item.label || item.type}}</text><text class="event-date">{{item.date}}</text></view></view></view></view>
+  <view class="detail-section"><view class="section-heading"><text>物品资料</text></view><view class="info-list"><view><text>品牌</text><text>{{item.brand || '未填写'}}</text></view><view><text>规格</text><text>{{item.specification || '未填写'}}</text></view><view><text>条码</text><text>{{item.barcode || '未填写'}}</text></view><view><text>备注</text><text>{{item.note || '未填写'}}</text></view></view></view>
+  <button wx:if="{{item.status !== 'processed'}}" class="primary-button" bindtap="process">标记已处理</button>
+  <button wx:if="{{isAdmin}}" class="danger-action" bindtap="remove">删除物品</button>
+</view>
+<view wx:elif="{{loading}}" class="page empty-state"><view class="empty-mark">…</view><text class="empty-title">正在加载</text></view>
+<view wx:else class="page"><view class="error-state"><text>{{error || '物品详情暂时无法显示'}}</text><button bindtap="retry">重新加载</button></view></view>

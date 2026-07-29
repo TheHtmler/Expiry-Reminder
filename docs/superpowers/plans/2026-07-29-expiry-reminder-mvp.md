@@ -15,6 +15,7 @@
 - 首期只交付微信小程序，不实现 iOS 或 Android App。
 - 核心优先级固定为：提醒可靠性 > 录入速度 > 家庭共享。
 - 家庭角色仅包含 `admin` 与 `member`。
+- 用户没有任何有效家庭时，会话初始化必须自动创建“我的家”，当前用户为管理员。
 - 一个用户可以加入多个家庭，所有业务数据按 `householdId` 隔离。
 - 家庭内所有有效成员接收提醒。
 - 每次录入创建独立物品记录，不自动合并相同商品。
@@ -394,7 +395,7 @@ git commit -m "chore: initialize wechat miniprogram project"
   - `changeQuantity(current: number, delta: number): QuantityResult`
   - `buildReminderSchedule(input: ReminderScheduleInput): string[]`
 
-- [ ] **Step 1: 写日期状态失败测试**
+- [x] **Step 1: 写日期状态失败测试**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -426,13 +427,13 @@ describe("calculateEventStatus", () => {
 });
 ```
 
-- [ ] **Step 2: 运行日期测试并确认失败**
+- [x] **Step 2: 运行日期测试并确认失败**
 
 Run: `npm test -- tests/domain/date-status.test.ts`
 
 Expected: FAIL，提示无法解析 `date-status` 模块。
 
-- [ ] **Step 3: 实现日期状态**
+- [x] **Step 3: 实现日期状态**
 
 ```ts
 export type EventStatus =
@@ -466,7 +467,7 @@ export function calculateEventStatus(input: EventStatusInput): EventStatus {
 }
 ```
 
-- [ ] **Step 4: 写数量与提醒策略失败测试**
+- [x] **Step 4: 写数量与提醒策略失败测试**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -502,7 +503,7 @@ describe("buildReminderSchedule", () => {
 });
 ```
 
-- [ ] **Step 5: 实现数量与提醒策略**
+- [x] **Step 5: 实现数量与提醒策略**
 
 `quantity.ts`：
 
@@ -553,7 +554,7 @@ export function buildReminderSchedule(input: ReminderScheduleInput): string[] {
 }
 ```
 
-- [ ] **Step 6: 运行领域测试与类型检查**
+- [x] **Step 6: 运行领域测试与类型检查**
 
 Run: `npm test -- tests/domain`
 
@@ -593,7 +594,7 @@ git commit -m "feat: add expiry domain rules"
   - `callApi<A extends ApiAction>(action, payload)`
   - `ok(data)` 与 `fail(code, message)`
 
-- [ ] **Step 1: 写协议失败测试**
+- [x] **Step 1: 写协议失败测试**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -617,13 +618,13 @@ describe("云函数协议", () => {
 });
 ```
 
-- [ ] **Step 2: 运行测试并确认失败**
+- [x] **Step 2: 运行测试并确认失败**
 
 Run: `npm test -- tests/contracts tests/server/result.test.ts`
 
 Expected: FAIL，提示模块不存在。
 
-- [ ] **Step 3: 定义 action 与响应结构**
+- [x] **Step 3: 定义 action 与响应结构**
 
 `actions.ts`：
 
@@ -706,7 +707,7 @@ export const fail = (code: ApiErrorCode, message: string) => ({
 });
 ```
 
-- [ ] **Step 4: 实现小程序云函数客户端**
+- [x] **Step 4: 实现小程序云函数客户端**
 
 ```ts
 import type { ApiAction } from "../../packages/contracts/src/actions";
@@ -731,7 +732,7 @@ export async function callApi<TPayload, TResult>(
 }
 ```
 
-- [ ] **Step 5: 运行测试与类型检查**
+- [x] **Step 5: 运行测试与类型检查**
 
 Run: `npm test -- tests/contracts tests/server/result.test.ts`
 
@@ -780,7 +781,11 @@ git commit -m "feat: define cloud api contracts"
   - `dissolveHousehold(actor, input): Promise<void>`
   - `assertMember(actor, householdId, roles?)`
 
-- [ ] **Step 1: 写家庭权限失败测试**
+`SessionService.bootstrap` 在用户没有任何有效家庭时，必须在同一事务内创建名为
+“我的家”的家庭、管理员成员和默认分类；重复初始化不得重复创建。客户端无家庭引导
+仅作为异常数据的兜底，不再是正常首次进入路径。
+
+- [x] **Step 1: 写家庭权限失败测试**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -821,13 +826,13 @@ describe("HouseholdService", () => {
 });
 ```
 
-- [ ] **Step 2: 运行测试并确认失败**
+- [x] **Step 2: 运行测试并确认失败**
 
 Run: `npm test -- tests/server/households.test.ts`
 
 Expected: FAIL，提示 `HouseholdService` 不存在。
 
-- [ ] **Step 3: 定义仓储与服务接口**
+- [x] **Step 3: 定义仓储与服务接口**
 
 `repositories.ts` 必须暴露：
 
@@ -850,7 +855,7 @@ export interface Repositories {
 
 `HouseholdService.createHousehold` 必须在同一业务用例内创建家庭与管理员成员；邀请令牌使用加密随机值的 SHA-256 摘要落库，原始令牌只返回一次，24 小时后失效。
 
-- [ ] **Step 4: 实现服务端路由**
+- [x] **Step 4: 实现服务端路由**
 
 ```ts
 export interface Services {
@@ -886,7 +891,7 @@ export function createRouter(services: Services) {
 }
 ```
 
-- [ ] **Step 5: 配置集合、唯一索引和默认拒绝规则**
+- [x] **Step 5: 配置集合、唯一索引和默认拒绝规则**
 
 `indexes.json` 至少包含：
 
@@ -923,13 +928,13 @@ export function createRouter(services: Services) {
 `dissolvedAt`，同时将全部成员状态更新为 `removed`。转让管理员必须在一个事务
 中将目标成员设为 `admin`、原管理员设为 `member`，任一步失败均回滚。
 
-- [ ] **Step 6: 运行家庭服务测试**
+- [x] **Step 6: 运行家庭服务测试**
 
 Run: `npm test -- tests/server/households.test.ts tests/integration/household-flow.test.ts`
 
 Expected: 创建、邀请、加入、移除和越权场景全部 PASS。
 
-- [ ] **Step 7: 构建云函数并验证入口**
+- [x] **Step 7: 构建云函数并验证入口**
 
 Run: `npm run build:cloudfunctions`
 
@@ -969,7 +974,7 @@ git commit -m "feat: add household membership backend"
   - `saveLocation(actor, input)`
   - `ensureDefaultCategories(householdId): Promise<void>`
 
-- [ ] **Step 1: 写默认分类失败测试**
+- [x] **Step 1: 写默认分类失败测试**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -991,7 +996,7 @@ describe("DEFAULT_CATEGORIES", () => {
 });
 ```
 
-- [ ] **Step 2: 写分类权限与排序失败测试**
+- [x] **Step 2: 写分类权限与排序失败测试**
 
 ```ts
 it("普通成员不能修改分类", async () => {
@@ -1011,13 +1016,13 @@ it("排序必须包含家庭全部可见分类且不得重复", async () => {
 });
 ```
 
-- [ ] **Step 3: 运行测试并确认失败**
+- [x] **Step 3: 运行测试并确认失败**
 
 Run: `npm test -- tests/domain/default-categories.test.ts tests/server/categories.test.ts tests/server/locations.test.ts`
 
 Expected: FAIL，提示对应模块不存在。
 
-- [ ] **Step 4: 实现默认分类和管理员写入规则**
+- [x] **Step 4: 实现默认分类和管理员写入规则**
 
 `DEFAULT_CATEGORIES` 每项固定包含：
 
@@ -1037,11 +1042,11 @@ Expected: FAIL，提示对应模块不存在。
 新增记录。Task 4 的 `createHousehold` 在创建管理员成员后调用该函数；已有测试
 家庭通过一次初始化调用补齐默认分类。
 
-- [ ] **Step 5: 实现位置服务**
+- [x] **Step 5: 实现位置服务**
 
 位置记录包含 `id`、`householdId`、`name`、`sortOrder`、`hidden`。管理员可新增、排序、隐藏；普通成员只读。名称去除首尾空格后在同一家庭内不允许重复。
 
-- [ ] **Step 6: 运行测试**
+- [x] **Step 6: 运行测试**
 
 Run: `npm test -- tests/domain/default-categories.test.ts tests/server/categories.test.ts tests/server/locations.test.ts`
 
@@ -1081,7 +1086,7 @@ git commit -m "feat: add household categories and locations"
   - `bulkMoveCategory(actor, BulkMoveCategoryInput): Promise<number>`
   - `listItems(actor, ItemListQuery): Promise<ItemListDto>`
 
-- [ ] **Step 1: 写物品校验失败测试**
+- [x] **Step 1: 写物品校验失败测试**
 
 ```ts
 it("到期日早于生产日期时拒绝保存", async () => {
@@ -1107,7 +1112,7 @@ it("相同 requestId 不重复创建物品", async () => {
 });
 ```
 
-- [ ] **Step 2: 写数量并发失败测试**
+- [x] **Step 2: 写数量并发失败测试**
 
 ```ts
 it("并发减数量不会降到零以下", async () => {
@@ -1142,13 +1147,13 @@ it("只有管理员可批量移动分类", async () => {
 });
 ```
 
-- [ ] **Step 3: 运行测试并确认失败**
+- [x] **Step 3: 运行测试并确认失败**
 
 Run: `npm test -- tests/server/items.test.ts tests/integration/item-flow.test.ts`
 
 Expected: FAIL，提示 `ItemService` 不存在。
 
-- [ ] **Step 4: 实现物品写入与事件状态**
+- [x] **Step 4: 实现物品写入与事件状态**
 
 `CreateItemInput` 固定包含 `requestId`、`householdId`、`name`、`categoryId`、`quantity`、`unit`、可选条码/品牌/规格/位置/备注/图片，以及至少一个 `events` 项。服务端保存前完成：
 
@@ -1166,7 +1171,7 @@ const statuses = input.events.map((event) => ({
 
 物品与事件写入必须由同一服务用例协调；任一步骤失败时不返回成功响应。
 
-- [ ] **Step 5: 实现数量乐观锁、处理与软删除**
+- [x] **Step 5: 实现数量乐观锁、处理与软删除**
 
 数量更新条件必须同时匹配 `id`、`householdId`、`version` 和 `deletedAt: null`。成功后 `version + 1`；未匹配时返回 `CONFLICT`。数量归零时写入 `processedStatus: "used_up"`。
 
@@ -1184,11 +1189,11 @@ const statuses = input.events.map((event) => ({
 `deletedBy`、`recoverableUntil` 清空。`bulkMoveCategory` 必须校验目标分类属于
 同一家庭，且所有 `itemIds` 均属于该家庭；任意一条不匹配时整批拒绝。
 
-- [ ] **Step 6: 添加列表索引与默认排序**
+- [x] **Step 6: 添加列表索引与默认排序**
 
 创建 `(householdId, deletedAt, nearestEventDate)`、`(householdId, categoryId, nearestEventDate)`、`(householdId, barcode)` 索引。列表默认按 `nearestEventDate asc, createdAt desc`。
 
-- [ ] **Step 7: 运行测试**
+- [x] **Step 7: 运行测试**
 
 Run: `npm test -- tests/server/items.test.ts tests/integration/item-flow.test.ts`
 
@@ -1227,7 +1232,7 @@ git commit -m "feat: add item lifecycle backend"
   - `sessionState.switchHousehold(householdId)`
   - `getCurrentHouseholdId(): string | null`
 
-- [ ] **Step 1: 写会话状态失败测试**
+- [x] **Step 1: 写会话状态失败测试**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -1253,13 +1258,13 @@ describe("sessionState", () => {
 });
 ```
 
-- [ ] **Step 2: 运行测试并确认失败**
+- [x] **Step 2: 运行测试并确认失败**
 
 Run: `npm test -- tests/integration/session-state.test.ts`
 
 Expected: FAIL，提示 `createSessionState` 不存在。
 
-- [ ] **Step 3: 实现会话状态与应用启动**
+- [x] **Step 3: 实现会话状态与应用启动**
 
 ```ts
 App({
@@ -1275,7 +1280,7 @@ App({
 
 `switchHousehold` 必须验证目标家庭存在于会话列表，成功后写入本地键 `currentHouseholdId` 并发布 `householdChanged` 事件。
 
-- [ ] **Step 4: 创建家庭切换与成员界面**
+- [x] **Step 4: 创建家庭切换与成员界面**
 
 家庭切换器 WXML：
 
@@ -1293,7 +1298,7 @@ App({
 分类设置页支持新建、重命名、图标、颜色、拖拽排序和显隐；系统分类不显示删除
 按钮。位置设置页支持新建、重命名、排序和隐藏。普通成员进入这两个页面时只读。
 
-- [ ] **Step 5: 运行测试与微信开发者工具编译**
+- [x] **Step 5: 运行测试与微信开发者工具编译**
 
 Run: `npm test -- tests/integration/session-state.test.ts`
 
@@ -1335,7 +1340,7 @@ git commit -m "feat: add household session experience"
   - `buildHomeViewModel(items, today): HomeViewModel`
   - 首页、物品、详情和手动录入完整路径。
 
-- [ ] **Step 1: 写首页分组与表单校验失败测试**
+- [x] **Step 1: 写首页分组与表单校验失败测试**
 
 ```ts
 it("首页按过期、今日到期、临期顺序分组", () => {
@@ -1359,13 +1364,13 @@ it("名称、分类或日期缺失时拒绝提交", () => {
 });
 ```
 
-- [ ] **Step 2: 运行测试并确认失败**
+- [x] **Step 2: 运行测试并确认失败**
 
 Run: `npm test -- tests/integration/item-form.test.ts tests/integration/home-view-model.test.ts`
 
 Expected: FAIL，提示视图模型函数不存在。
 
-- [ ] **Step 3: 实现提醒优先首页**
+- [x] **Step 3: 实现提醒优先首页**
 
 首页必须呈现：
 
@@ -1388,7 +1393,7 @@ Expected: FAIL，提示视图模型函数不存在。
 
 刷新逻辑在页面 `onShow` 和 `householdChanged` 时执行；请求失败时保留上次成功数据并显示重试入口。
 
-- [ ] **Step 4: 实现物品列表、筛选和详情**
+- [x] **Step 4: 实现物品列表、筛选和详情**
 
 筛选参数固定为 `categoryId`、`locationId`、`status`、`keyword`；输入搜索词 300ms 防抖。详情页展示基础资料、日期事件、最后修改人和时间，并提供编辑、处理和软删除入口。
 
@@ -1398,7 +1403,7 @@ Expected: FAIL，提示视图模型函数不存在。
 `ItemListQuery` 使用 `deleted: "active" | "recoverable"` 区分正常列表和回收站，
 服务端禁止普通成员查询 `recoverable`。
 
-- [ ] **Step 5: 实现单页手动录入**
+- [x] **Step 5: 实现单页手动录入**
 
 表单首屏只展开名称、分类、日期、数量和位置；品牌、规格、条码、图片和备注放入“更多信息”。保存按钮通过 `requestId` 防重复提交，保存成功后返回详情页。
 

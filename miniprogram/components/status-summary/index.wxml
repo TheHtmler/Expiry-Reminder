@@ -1,0 +1,5 @@
+<view class="summary">
+  <view class="summary-item expired"><view class="indicator"></view><text class="count">{{expired}}</text><text>已过期</text></view>
+  <view class="summary-item today"><view class="indicator"></view><text class="count">{{dueToday}}</text><text>今日到期</text></view>
+  <view class="summary-item near"><view class="indicator"></view><text class="count">{{nearExpiry}}</text><text>即将到期</text></view>
+</view>

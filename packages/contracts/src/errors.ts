@@ -1,0 +1,8 @@
+export type ApiErrorCode =
+  | "UNAUTHENTICATED"
+  | "FORBIDDEN"
+  | "NOT_FOUND"
+  | "VALIDATION_ERROR"
+  | "CONFLICT"
+  | "OCR_LOW_CONFIDENCE"
+  | "INTERNAL_ERROR";

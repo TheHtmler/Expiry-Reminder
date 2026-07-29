@@ -1,1 +1,5 @@
-
+.segmented { display: grid; grid-template-columns: 1fr 1fr; padding: 6rpx; border-radius: 8rpx; background: #e5e9e3; }
+.segment { min-height: 68rpx; margin: 0; background: transparent; color: #687068; font-size: 27rpx; }
+.segment::after { border: 0; }
+.segment.active { background: #fff; color: #2f3a31; font-weight: 650; box-shadow: 0 2rpx 8rpx rgba(38, 48, 39, .08); }
+.date-band { display: flex; align-items: center; justify-content: space-between; padding: 28rpx 2rpx 16rpx; color: #697169; font-size: 24rpx; }
