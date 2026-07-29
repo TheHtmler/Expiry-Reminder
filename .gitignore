@@ -1,0 +1,13 @@
+.superpowers/
+.DS_Store
+node_modules/
+miniprogram_npm/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+private.config.json
+
