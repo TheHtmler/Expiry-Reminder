@@ -1,5 +1,5 @@
 <view class="stepper">
-  <button class="step" disabled="{{quantity <= 0}}" bindtap="decrease" aria-label="减少数量">−</button>
+  <view class="step {{quantity <= 0 ? 'disabled' : ''}}" hover-class="btn-hover" bindtap="decrease" aria-label="减少数量">−</view>
   <text class="quantity">{{quantity}}</text>
-  <button class="step" bindtap="increase" aria-label="增加数量">+</button>
+  <view class="step" hover-class="btn-hover" bindtap="increase" aria-label="增加数量">+</view>
 </view>

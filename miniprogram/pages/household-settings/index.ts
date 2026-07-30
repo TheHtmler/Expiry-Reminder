@@ -7,7 +7,7 @@ import {
 } from "../../services/session-service";
 import { getCurrentHouseholdId, sessionState } from "../../state/session";
 
-const HOURS = Array.from({ length: 13 }, (_, index) => index + 8);
+const HOURS = Array.from({ length: 24 }, (_, index) => index);
 
 Page({
   data: {
@@ -16,6 +16,7 @@ Page({
     timezone: "Asia/Shanghai",
     reminderHour: 9,
     hours: HOURS,
+    hourLabels: HOURS.map((hour) => `${String(hour).padStart(2, "0")}:00`),
     members: [] as HouseholdMemberView[],
     targetIndex: -1,
     saving: false,

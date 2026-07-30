@@ -1,19 +1,41 @@
 <view class="page">
   <view class="page-heading"><text class="page-title">我的</text></view>
-  <view class="family-banner"><view class="family-mark"><image src="/assets/tabbar/house-active.png" mode="aspectFit" /></view><view class="family-main"><text class="family-label">当前家庭</text><household-switcher current-household="{{currentHousehold}}" /></view><text class="role-chip">{{isAdmin ? '管理员' : '成员'}}</text></view>
+  <view class="family-banner">
+    <view class="family-mark"><image src="/assets/tabbar/house-active.png" mode="aspectFit" /></view>
+    <view class="family-main">
+      <text class="family-label">当前家庭</text>
+      <household-switcher current-household="{{currentHousehold}}" />
+    </view>
+    <text class="role-chip">{{isAdmin ? '管理员' : '成员'}}</text>
+  </view>
   <view class="menu-section">
     <text class="menu-label">家庭空间</text>
     <view class="list-surface">
-      <view class="list-row" data-url="/pages/household-members/index" bindtap="openPage"><view class="menu-main"><view class="menu-icon green"><image src="/assets/ui/users-round.png" mode="aspectFit" /></view><text class="row-title">家庭成员</text></view><text class="row-arrow">›</text></view>
-      <view class="list-row" data-url="/pages/household-settings/index" bindtap="openPage"><view class="menu-main"><view class="menu-icon amber"><image src="/assets/ui/settings-2.png" mode="aspectFit" /></view><text class="row-title">家庭设置</text></view><text class="row-arrow">›</text></view>
+      <view class="list-row" data-url="/pages/household-members/index" bindtap="openPage">
+        <view class="row-main"><view class="menu-icon green"><image src="/assets/ui/users-round.png" mode="aspectFit" /></view><text class="row-title">家庭成员</text></view>
+        <text class="row-arrow">›</text>
+      </view>
+      <view class="list-row" data-url="/pages/household-settings/index" bindtap="openPage">
+        <view class="row-main"><view class="menu-icon amber"><image src="/assets/ui/settings-2.png" mode="aspectFit" /></view><text class="row-title">家庭设置</text></view>
+        <text class="row-arrow">›</text>
+      </view>
     </view>
   </view>
   <view class="menu-section">
     <text class="menu-label">物品设置</text>
     <view class="list-surface">
-      <view class="list-row" data-url="/pages/category-settings/index" bindtap="openPage"><view class="menu-main"><view class="menu-icon coral"><image src="/assets/ui/shapes.png" mode="aspectFit" /></view><text class="row-title">分类管理</text></view><text class="row-arrow">›</text></view>
-      <view class="list-row" data-url="/pages/location-settings/index" bindtap="openPage"><view class="menu-main"><view class="menu-icon green"><image src="/assets/ui/map-pin.png" mode="aspectFit" /></view><text class="row-title">位置管理</text></view><text class="row-arrow">›</text></view>
-      <view wx:if="{{isAdmin}}" class="list-row" data-url="/pages/recycle-bin/index" bindtap="openPage"><view class="menu-main"><view class="menu-icon gray"><image src="/assets/ui/trash-2.png" mode="aspectFit" /></view><text class="row-title">最近删除</text></view><text class="row-arrow">›</text></view>
+      <view class="list-row" data-url="/pages/category-settings/index" bindtap="openPage">
+        <view class="row-main"><view class="menu-icon mint"><image src="/assets/ui/shapes.png" mode="aspectFit" /></view><text class="row-title">分类管理</text></view>
+        <text class="row-arrow">›</text>
+      </view>
+      <view class="list-row" data-url="/pages/location-settings/index" bindtap="openPage">
+        <view class="row-main"><view class="menu-icon green"><image src="/assets/ui/map-pin.png" mode="aspectFit" /></view><text class="row-title">位置管理</text></view>
+        <text class="row-arrow">›</text>
+      </view>
+      <view wx:if="{{isAdmin}}" class="list-row" data-url="/pages/recycle-bin/index" bindtap="openPage">
+        <view class="row-main"><view class="menu-icon gray"><image src="/assets/ui/trash-2.png" mode="aspectFit" /></view><text class="row-title">最近删除</text></view>
+        <text class="row-arrow">›</text>
+      </view>
     </view>
   </view>
 </view>

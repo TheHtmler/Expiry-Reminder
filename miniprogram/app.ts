@@ -4,6 +4,9 @@ import {
   getCloudErrorMessage,
   isCloudSetupError,
 } from "./services/cloud-client";
+// 预加载扫码相关模块，避免开发者工具未注册新服务文件
+import "./services/scanner";
+import "./services/catalog-service";
 
 App({
   async onLaunch() {

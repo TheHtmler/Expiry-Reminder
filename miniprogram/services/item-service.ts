@@ -45,3 +45,12 @@ export const restoreItem = (householdId: string, itemId: string) =>
 
 export const bulkMoveItems = (input: BulkMoveCategoryInput) =>
   callApi<BulkMoveCategoryInput, number>("item.bulkMoveCategory", input);
+
+export interface HandleableItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  version: number;
+  status?: string;
+}

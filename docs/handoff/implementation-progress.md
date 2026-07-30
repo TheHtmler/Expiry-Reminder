@@ -31,7 +31,12 @@
   工具本地编译，开发环境数据联调仍待数据库初始化，提交暂缓。
 - Task 8「提醒优先首页、物品列表、手动录入与详情」已完成代码步骤和自动验证，等待
   数据库初始化后的开发环境全路径走查，提交暂缓。
-- Task 9 至 Task 14 尚未开始。
+- 手动录入已改为极简快录（名称+到期日+可选商品图），新建保存后返回上一页；完整
+  凭证媒体鉴权仍属 Task 14，提交暂缓。
+- Task 9「扫码、商品资料复用与重复记录提示」代码与自动验证完成，等待重新部署
+  `api` 云函数与真机扫码验收，提交暂缓。
+- Task 10 至 Task 14 尚未开始。
+- 主界面已切换为叶绿健康主题（强调色 `#2F8F62`），交互保持简约，提交暂缓。
 - 项目所有者已明确要求暂不提交并继续开发；各任务仍须顺序实施、独立验证和记录，
   对应提交步骤保持未勾选，后续提交前必须再次取得明确确认。
 - `project.config.json` 存在微信开发者工具自动回写的未提交设置，处理后续任务时必须
@@ -293,7 +298,7 @@
 - 启动时初始化 CloudBase、恢复上次仍有权限的家庭，无家庭时进入创建或加入流程。
 - 切换家庭时校验会话权限、持久化选择并发布 `householdChanged` 事件。
 - 创建或加入家庭、家庭列表与切换、成员列表和一次性邀请页面。
-- 家庭设置页面支持名称、时区、08:00 至 20:00 提醒时间、管理员转让和解散家庭；
+- 家庭设置页面支持名称、时区、00:00 至 23:00 提醒时间、管理员转让和解散家庭；
   高风险操作二次确认文案包含家庭名称。
 - 分类与位置页面支持管理员新增、显隐和排序，普通成员只读，系统分类无删除操作。
 - “我的”页面提供家庭、成员、设置、分类和位置入口。
@@ -540,3 +545,296 @@ CloudBase 免费环境只有环境和云函数，数据库集合尚未初始化�
   自动集合初始化和本轮流程修复。
 - 正式环境仍需按 `infra/cloudbase/indexes.json` 和 `database.rules.json` 配置唯一索引与
   数据库默认拒绝规则。
+
+### 2026-07-30：绿色健康主题与交互统一
+
+状态：UI 样式与图标资源已落地，按项目所有者要求暂不提交；不执行截图或模拟器自动检测。
+
+背景：项目所有者要求完善 UI 与交互，主题色偏绿色健康色，配色舒适、交互简约，
+直接采用推荐方案，不另开设计稿或多套方案。
+
+已实现：
+
+- 全局主题从珊瑚橙切换为叶绿健康色：主色 `#2F8F62`，深绿文字/强调 `#246B4A`，
+  画布 `#F2F6F3`，中性灰带绿偏色；过期红与今日到期琥珀保留语义区分。
+- `app.json` 导航栏、TabBar 选中色与背景同步；重新生成 TabBar 与 UI 图标为绿色描边。
+- 首页品牌标、状态摘要、FAB、物品卡、数量步进、家庭切换器、提醒分段、我的页菜单、
+  录入/详情/设置页控件统一圆角、边框和按下反馈。
+- 分类颜色选项首色改为叶绿；开关与批量选择复选框使用主题绿。
+- 实施计划中的 TabBar `selectedColor` 示例同步更新。
+
+主要文件：
+
+- `miniprogram/app.wxss`、`miniprogram/app.json`
+- `miniprogram/pages/**/*.wxss`、部分 `*.wxml`
+- `miniprogram/components/**/*.wxss`
+- `miniprogram/assets/tabbar/*`、`miniprogram/assets/ui/*`
+- `docs/superpowers/plans/2026-07-29-expiry-reminder-mvp.md`
+
+验证结果：
+
+- 仓库内珊瑚橙硬编码扫描：已清除。
+- 图标资源已用 `scripts/render-tab-icon.swift` 按 `#2F8F62` / `#8A968E` / `#3D6B54` 重渲。
+- 本轮为纯视觉与交互样式调整，未改业务逻辑；未额外跑全量测试。
+
+未完成事项：
+
+- 在微信开发者工具重新编译后目视确认四 Tab、录入、详情和设置页观感。
+- 云函数部署与数据库初始化仍按上一记录待办执行。
+
+### 2026-07-30：界面对齐与布局统一修复
+
+状态：布局与对齐问题已统一修复，按项目所有者要求暂不提交。
+
+背景：项目所有者反馈界面存在多处未对齐、错乱问题，要求统一修改。
+
+已修复：
+
+- 修正 `.page-heading`：标题与副标题改为纵向堆叠，不再被 `space-between` 甩到左右两侧。
+- 全局重置微信 `button` 默认边距/行高，主次按钮与文本按钮统一 flex 垂直居中。
+- 输入框与 picker 统一高度 88rpx；picker 文案与箭头左右分离并对齐。
+- 首页/物品页 FAB 底 padding 加大，避免遮挡列表；批量模式隐藏 FAB 并抬高列表底边距。
+- 物品卡「处理」与数量步进器统一 56rpx 高；列表行左侧 `min-width:0` + 省略号防挤压。
+- 分类/位置设置去掉 `size="mini"`，改用统一 `icon-button`；成员移除、回收站恢复按钮对齐。
+- 分段控件抽到全局，提醒页与引导页高度一致；详情页资料行与危险操作按钮重置。
+
+主要文件：
+
+- `miniprogram/app.wxss`
+- `miniprogram/pages/**/*.{wxml,wxss}`
+- `miniprogram/components/**/*.wxss`
+
+验证结果：
+
+- 本轮为布局与样式修复，未改业务逻辑。
+- 需在微信开发者工具重新编译后目视确认各页对齐。
+
+### 2026-07-30：按钮形状与排版修复
+
+状态：按钮样式体系已重做，按项目所有者要求暂不提交。
+
+背景：项目所有者反馈各按钮显示排版与形状均有问题。根因是微信原生
+`button` 的边框/圆角由 `::after` 控制，且自定义组件隔离导致全局重置失效；
+同时 `display:flex` + 非法 `font-weight:650/750` 在部分机型上造成高度和形状异常。
+
+已修复：
+
+- 新增共享 `miniprogram/styles/buttons.wxss`：统一主/次/文本/空态/FAB/分段/
+  行内小按钮样式，并正确清除 `button::after` 边框与圆角。
+- FAB、分段、数量步进、处理、编辑、移除、恢复、图标选择等改为 `view` +
+  `hover-class`，避免原生 button 默认宽高和圆角干扰。
+- 仅保留需要 `loading/disabled` 的提交类操作为原生 `button`。
+- 物品卡与数量步进器组件内 `@import` 共享按钮样式，解决样式隔离问题。
+- 文字垂直居中改用固定 `height` + 匹配 `line-height`。
+
+主要文件：
+
+- `miniprogram/styles/buttons.wxss`
+- `miniprogram/app.wxss`
+- `miniprogram/pages/**/*.{wxml,wxss}`
+- `miniprogram/components/item-card/*`
+- `miniprogram/components/quantity-stepper/*`
+
+验证结果：
+
+- 本轮为样式与交互承载结构调整，未改业务逻辑。
+- 需在微信开发者工具重新编译后目视确认按钮圆角、高度和文字居中。
+
+### 2026-07-30：修复 buttons.wxss 导入编译失败
+
+状态：已修复，暂不提交。
+
+问题：微信开发者工具预览报 `./styles/buttons.wxss` 与组件内相对 `@import`
+路径找不到，导致 WXSS 编译失败。
+
+处理：
+
+- 将按钮样式直接内联进 `miniprogram/app.wxss`，取消 `@import`。
+- 物品卡与数量步进器组件改为本地声明所需按钮类，不再跨目录导入。
+- 删除 `miniprogram/styles/buttons.wxss`。
+
+### 2026-07-30：极简录入与商品图上传
+
+状态：代码与自动验证完成，暂不提交。
+
+背景：项目所有者反馈录入流程偏复杂，确认采用「极简快录」，并要求支持上传商品图。
+
+已实现：
+
+- 录入首屏仅保留名称、到期日、可选商品图和轻量分类选择；分类默认第一个可见分类。
+- 数量、单位、位置、生产日期、品牌、规格、条码、备注收进「更多选项」。
+- 新建保存成功后 Toast「已添加」并 `navigateBack`；编辑保存仍进入详情。
+- 新增 `media-path` / `media-service`：选图后上传到
+  `households/{householdId}/drafts/{requestId}/product/...`，写入 `imageFileId`。
+- 图片上传失败提示可重试，不阻断文字保存；详情页展示已有商品图。
+- 未实现发票/保修/`media.tempUrl` 完整鉴权（仍属 Task 14）。
+
+主要文件：
+
+- `miniprogram/pages/item-form/index.*`
+- `miniprogram/pages/item-detail/index.wxml`、`index.wxss`
+- `miniprogram/services/media-service.ts`（路径构建已并入此文件，避免独立模块未注册）
+- `tests/integration/media-path.test.ts`
+
+验证结果：
+
+- `npm test -- tests/integration/item-form.test.ts tests/integration/media-path.test.ts`：
+  2 个文件、4 个测试通过。
+- `npm run typecheck`：通过。
+
+未完成事项：
+
+- 真机/开发者工具验证选图授权、云存储上传与详情图显示。
+- CloudBase 存储权限需允许当前环境上传到 `households/` 前缀。
+
+### 2026-07-30：修复添加物品白屏
+
+状态：已修复，暂不提交。
+
+问题：打开录入页后白屏无内容。
+
+处理：
+
+- 去掉 WXML 中 `focus="{{!itemId}}"` 与 `categories[index].name` 等易崩溃表达式。
+- 标题、分类/位置文案、保存按钮状态改为 JS 计算字段再绑定。
+- 加载失败在页面内显示错误与重试，不再只 Toast。
+- 媒体服务去掉可选链，降低旧基础库脚本风险。
+- 根因补充：分类 `picker` 绑定了 `value=-1`，微信渲染会白屏；改为
+  `categoryPickerIndex >= 0`，日期 picker 使用合法默认值，选项就绪后再挂载 picker。
+
+下一步：继续 Task 9 或按项目所有者指定的下一功能项推进。
+
+### 2026-07-30：首页顶部栏（搜索 / 扫码）
+
+状态：代码完成，暂不提交。
+
+背景：项目所有者希望首页上方有顶部栏，提供搜索、扫码等全局入口。
+
+已实现：
+
+- 首页在品牌与家庭切换下方增加顶部操作栏：搜索框 + 扫码按钮。
+- 搜索确认后经 `state/session` 跨 Tab 传递关键词，并 `switchTab` 到物品页执行筛选。
+- 扫码调用 `wx.scanCode`，将条码带入录入页预填；自动展开「更多选项」以便核对条码。
+- 扫码暂不做商品库匹配（完整能力仍属 Task 9）。
+- 新增扫码图标资源：`scan-line.svg` / `scan-line.png`。
+- 修复：独立 `state/navigation` 模块在开发者工具中未注册导致报错，已并入已加载的
+  `state/session`。
+
+主要文件：
+
+- `miniprogram/pages/home/index.*`
+- `miniprogram/pages/items/index.ts`
+- `miniprogram/pages/item-form/index.ts`
+- `miniprogram/state/session.ts`
+- `miniprogram/assets/icons/scan-line.svg`
+- `miniprogram/assets/ui/scan-line.png`
+
+验证结果：
+
+- 需在微信开发者工具重新编译后验证：搜索跳转物品页、扫码打开录入并预填条码。
+- 真机需授权摄像头后验证扫码。
+
+未完成事项：
+
+- Task 9 扫码完整链路已实现，见下方记录。
+
+### 2026-07-30：Task 9 扫码、商品资料复用与重复记录提示
+
+状态：代码与自动验证完成，暂不提交。
+
+已实现：
+
+- 协议：`catalog.lookup`、`catalog.findMergeCandidate` 与商品/合并 DTO。
+- 服务端：`product_catalog` 仓储与集合；匹配顺序为家庭修正 → 公共资料 → 无匹配。
+- 保存带条码物品时写入家庭修正资料，供下次扫码复用名称/品牌/规格/图片等。
+- 小程序：`scanner`（仅相机、条码/二维码）、`scan-result` 匹配页、录入页预填。
+- 保存时若条码+到期日+位置完全相同，弹出“增加数量 / 保存新记录 / 取消”。
+- 首页扫码入口接入完整流程：扫码后直接匹配并进入录入页预填。
+- 因微信开发者工具对新建 `scan-result` 页面偶发“找不到 wxml”，已暂时不在
+  `app.json` 注册该页；页面文件仍保留，匹配逻辑改由首页直达录入页完成。
+
+主要文件：
+
+- `packages/contracts/src/catalog.ts`、`actions.ts`
+- `packages/server/src/catalog/*`、`repositories.ts`、`router.ts`、`index.ts`
+- `miniprogram/services/scanner.ts`、`catalog-service.ts`
+- `miniprogram/pages/scan-result/*`、`item-form/index.ts`、`home/index.ts`
+- `tests/server/catalog.test.ts`、`tests/integration/scanner.test.ts`
+- `infra/cloudbase/indexes.json`
+
+验证结果：
+
+- `npm test -- tests/server/catalog.test.ts tests/integration/scanner.test.ts tests/server/items.test.ts tests/server/cloud-setup.test.ts tests/contracts/actions.test.ts`：20 个测试通过。
+- `npm run typecheck`：通过。
+- `npm run build`：通过。
+
+未完成事项：
+
+- 需重新部署 `api` 云函数，并确保 CloudBase 存在 `product_catalog` 集合/索引。
+- 公共商品库当前无预置数据；首次扫未知条码只保留条码，保存后同家庭再次扫码可复用。
+- 真机验收：EAN-13、二维码、未知条码、取消扫码、合并提示三条路径。
+
+下一步：按项目所有者确认后提交，或继续 Task 10 OCR。
+
+### 2026-07-30：商品图显示比例
+
+状态：已调整，暂不提交。
+
+- 录入预览与详情图由 `aspectFill` 固定裁切改为 `aspectFit` 等比完整显示，避免拉伸/裁切变形。
+
+### 2026-07-30：物品更新弹窗（按属性）
+
+状态：已调整，暂不提交。
+
+- 列表数量只读；入口为「编辑」+「处理」。
+- 弃用系统 ActionSheet；因开发者工具对新组件路径识别异常，处理弹层并入已有
+  `item-card`，详情页内联同一套 UI：
+  1. 剩余数量：步进调整后点「保存数量」（归零自动不再提醒）
+  2. 提醒：确认后「不再提醒这件物品」
+
+### 2026-07-30：加载态与布局体验
+
+状态：已调整，暂不提交。
+
+- 首页/物品页默认 `loading=true`，首屏显示加载态；有数据刷新时显示顶部刷新条。
+- 物品页分类/位置与列表并行请求；导航栏 loading 同步。
+- 主按钮/空态/错误重试改为 flex 居中；隐藏滚动条；页面 `min-height` 改为
+  `100%` 减轻多余滚动。
+
+### 2026-07-30：列表加载可见性与物品缩略图
+
+状态：已调整，暂不提交。
+
+已实现：
+
+- 首屏无数据时使用 `wx.showLoading` + 页面内旋转加载态 + 顶部「正在加载…」条；
+  有数据刷新时顶部显示「正在刷新…」。
+- 去掉依赖 `icon type="waiting"`（部分环境不可见），改为 CSS spinner。
+- 物品卡片展示 `imageFileId` 缩略图；无图时显示占位「物」。
+
+主要文件：
+
+- `miniprogram/pages/home/index.{wxml,ts}`
+- `miniprogram/pages/items/index.{wxml,ts}`
+- `miniprogram/components/item-card/index.{wxml,wxss}`
+- `miniprogram/app.wxss`
+
+验证结果：本地改动完成；需微信开发者工具重新编译后目视确认加载态与缩略图。
+
+下一步：继续 Task 10，或按所有者确认后提交未提交变更。
+
+### 2026-07-30：每日提醒时间改为 24 小时整点
+
+状态：已调整，暂不提交。
+
+- 原设计限制 08:00–20:00；现改为 00:00–23:00 整点可选。
+- 服务端校验同步为 `0–23`；设置页选择器展示 `00:00` 至 `23:00`。
+
+主要文件：
+
+- `packages/server/src/households/service.ts`
+- `miniprogram/pages/household-settings/index.{ts,wxml}`
+- `tests/server/households.test.ts`
+- `docs/superpowers/specs/2026-07-29-expiry-reminder-design.md`
+
+验证：运行家庭设置相关测试与 typecheck/build。

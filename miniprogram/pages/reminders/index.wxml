@@ -1,13 +1,13 @@
 <view class="page reminders-page">
   <view class="page-heading"><text class="page-title">提醒</text></view>
   <view class="segmented">
-    <button class="segment {{mode === 'open' ? 'active' : ''}}" data-mode="open" bindtap="setMode">待处理</button>
-    <button class="segment {{mode === 'closed' ? 'active' : ''}}" data-mode="closed" bindtap="setMode">已处理</button>
+    <view class="segment {{mode === 'open' ? 'active' : ''}}" data-mode="open" hover-class="btn-hover" bindtap="setMode">待处理</view>
+    <view class="segment {{mode === 'closed' ? 'active' : ''}}" data-mode="closed" hover-class="btn-hover" bindtap="setMode">不再提醒</view>
   </view>
   <view class="date-band"><text>{{mode === 'open' ? '按紧急程度排序' : '最近处理记录'}}</text><text>0 项</text></view>
   <view class="empty-state">
     <image class="empty-icon" src="{{mode === 'open' ? '/assets/ui/circle-check.png' : '/assets/ui/calendar-days.png'}}" mode="aspectFit" />
     <text class="empty-title">{{mode === 'open' ? '没有待处理提醒' : '还没有处理记录'}}</text>
-    <button class="empty-action secondary" bindtap="openItems">查看全部物品</button>
+    <view class="empty-action secondary" hover-class="btn-hover" bindtap="openItems">查看全部物品</view>
   </view>
 </view>

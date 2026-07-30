@@ -1,8 +1,8 @@
 <view class="page">
   <view class="welcome"><view class="app-mark">期</view><text class="welcome-title">建立家庭空间</text></view>
   <view class="segmented">
-    <button class="segment {{mode === 'create' ? 'active' : ''}}" data-mode="create" bindtap="setMode">创建家庭</button>
-    <button class="segment {{mode === 'join' ? 'active' : ''}}" data-mode="join" bindtap="setMode">加入家庭</button>
+    <view class="segment {{mode === 'create' ? 'active' : ''}}" data-mode="create" hover-class="btn-hover" bindtap="setMode">创建家庭</view>
+    <view class="segment {{mode === 'join' ? 'active' : ''}}" data-mode="join" hover-class="btn-hover" bindtap="setMode">加入家庭</view>
   </view>
   <view class="form-surface">
     <view wx:if="{{mode === 'create'}}" class="field">

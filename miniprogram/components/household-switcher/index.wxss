@@ -1,3 +1,35 @@
-.household-switcher { display: inline-flex; align-items: center; gap: 8rpx; min-height: 60rpx; max-width: 310rpx; padding: 0 16rpx; border: 1rpx solid #d5dbd3; border-radius: 8rpx; background: rgba(255,255,255,.88); }
-.name { overflow: hidden; color: #3f473f; font-size: 24rpx; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-.arrow { flex: none; color: #8a928a; font-size: 22rpx; }
+.household-switcher {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  max-width: 300rpx;
+  min-height: 56rpx;
+  padding: 0 16rpx;
+  border: 1rpx solid #c8d5cd;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.household-switcher:active {
+  background: #e3f2ea;
+}
+
+.name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: #3d4d44;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  flex: none;
+  color: #8a968e;
+  font-size: 22rpx;
+  line-height: 1;
+}

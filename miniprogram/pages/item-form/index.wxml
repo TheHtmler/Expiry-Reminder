@@ -1,26 +1,118 @@
 <view class="page form-page">
-  <view class="page-heading form-heading"><view><text class="page-title">{{itemId ? '编辑物品' : '添加物品'}}</text><text class="page-subtitle">名称、分类和日期为必填项</text></view></view>
-  <view wx:if="{{optionError}}" class="form-error"><view class="error-state"><text>{{optionError}}</text><button bindtap="retryOptions">重新加载分类</button></view></view>
-  <view class="form-section">
-    <view class="section-heading"><text>基本信息</text><text class="section-caption">必填</text></view>
-    <view class="field"><text class="field-label">物品名称</text><input class="input" data-field="name" value="{{name}}" bindinput="onTextInput" placeholder="例如：纯牛奶" /><text wx:if="{{errors.name}}" class="error">{{errors.name}}</text></view>
-    <view class="field"><text class="field-label">分类</text><picker mode="selector" range="{{categories}}" range-key="name" value="{{categoryIndex}}" bindchange="onCategoryChange"><view class="input picker-value">{{categoryIndex >= 0 ? categories[categoryIndex].name : '请选择分类'}} <text>⌄</text></view></picker><text wx:if="{{errors.categoryId}}" class="error">{{errors.categoryId}}</text></view>
-    <view class="field"><text class="field-label">到期日期</text><picker mode="date" value="{{eventDate}}" bindchange="onDateChange" data-field="eventDate"><view class="input picker-value">{{eventDate || '请选择日期'}} <text>›</text></view></picker><text wx:if="{{errors.events}}" class="error">{{errors.events}}</text></view>
+  <view class="page-heading form-heading">
+    <view class="page-heading-main">
+      <text class="page-title">{{pageTitle}}</text>
+      <text class="page-subtitle">填名称和到期日即可</text>
+    </view>
   </view>
-  <view class="form-section">
-    <view class="section-heading"><text>数量与存放</text><text class="section-caption">选填</text></view>
-    <view class="grid-two"><view class="field"><text class="field-label">数量</text><input class="input" type="digit" data-field="quantity" value="{{quantity}}" bindinput="onTextInput" /></view><view class="field"><text class="field-label">单位</text><input class="input" data-field="unit" value="{{unit}}" bindinput="onTextInput" /></view></view>
-    <view class="field"><text class="field-label">位置</text><picker mode="selector" range="{{locations}}" range-key="name" value="{{locationIndex}}" bindchange="onLocationChange"><view class="input picker-value">{{locationIndex >= 0 ? locations[locationIndex].name : '未选择'}} <text>⌄</text></view></picker></view>
+
+  <view wx:if="{{optionError}}" class="form-error">
+    <view class="error-state">
+      <text>{{optionError}}</text>
+      <view class="error-retry" hover-class="btn-hover" bindtap="retryOptions">重新加载分类</view>
+    </view>
   </view>
-  <button class="more-button" bindtap="toggleMore">{{showMore ? '收起更多信息' : '更多信息'}}</button>
+
+  <view class="form-section">
+    <view class="photo-field" hover-class="btn-hover" bindtap="onChooseImage">
+      <view wx:if="{{hasImage}}" class="photo-filled">
+        <view class="photo-frame">
+          <image class="photo-preview" src="{{imageDisplay}}" mode="aspectFit" />
+        </view>
+        <view class="photo-actions">
+          <text class="photo-action">更换</text>
+          <text class="photo-action danger" catchtap="onClearImage">删除</text>
+        </view>
+      </view>
+      <view wx:else class="photo-empty">
+        <text class="photo-plus">+</text>
+        <text class="photo-hint">{{uploadingImage ? '正在上传...' : '添加商品图（可选）'}}</text>
+      </view>
+    </view>
+
+    <view class="field">
+      <text class="field-label">物品名称</text>
+      <input class="input" data-field="name" value="{{name}}" bindinput="onTextInput" placeholder="例如：纯牛奶" />
+      <text wx:if="{{errors.name}}" class="error">{{errors.name}}</text>
+    </view>
+
+    <view class="field">
+      <text class="field-label">到期日期</text>
+      <picker wx:if="{{optionsReady}}" mode="date" value="{{eventDatePickerValue}}" bindchange="onDateChange" data-field="eventDate">
+        <view class="input picker-value">
+          <text class="picker-text">{{eventDateLabel}}</text>
+          <text class="picker-caret">›</text>
+        </view>
+      </picker>
+      <view wx:else class="input picker-value"><text class="picker-text">{{eventDateLabel}}</text></view>
+      <text wx:if="{{errors.events}}" class="error">{{errors.events}}</text>
+    </view>
+
+    <view class="field category-field">
+      <text class="field-label">分类</text>
+      <picker wx:if="{{optionsReady}}" mode="selector" range="{{categoryNames}}" value="{{categoryPickerIndex}}" bindchange="onCategoryChange">
+        <view class="input picker-value compact">
+          <text class="picker-text">{{categoryLabel}}</text>
+          <text class="picker-caret">⌄</text>
+        </view>
+      </picker>
+      <view wx:else class="input picker-value compact"><text class="picker-text">{{categoryLabel}}</text></view>
+      <text wx:if="{{errors.categoryId}}" class="error">{{errors.categoryId}}</text>
+    </view>
+  </view>
+
+  <view class="more-button" hover-class="btn-hover" bindtap="toggleMore">{{moreButtonLabel}}</view>
+
   <view wx:if="{{showMore}}" class="form-section more-fields">
-    <view class="section-heading"><text>补充资料</text><text class="section-caption">选填</text></view>
-    <view class="field"><text class="field-label">生产日期</text><picker mode="date" value="{{productionDate}}" bindchange="onDateChange" data-field="productionDate"><view class="input picker-value">{{productionDate || '未填写'}} <text>›</text></view></picker></view>
-    <view class="field"><text class="field-label">品牌</text><input class="input" data-field="brand" value="{{brand}}" bindinput="onTextInput" /></view>
-    <view class="field"><text class="field-label">规格</text><input class="input" data-field="specification" value="{{specification}}" bindinput="onTextInput" /></view>
-    <view class="field"><text class="field-label">条码</text><input class="input" data-field="barcode" value="{{barcode}}" bindinput="onTextInput" /></view>
-    <view class="field"><text class="field-label">备注</text><textarea class="input textarea" data-field="note" value="{{note}}" bindinput="onTextInput" /></view>
+    <view class="grid-two">
+      <view class="field">
+        <text class="field-label">数量</text>
+        <input class="input" type="digit" data-field="quantity" value="{{quantity}}" bindinput="onTextInput" />
+      </view>
+      <view class="field">
+        <text class="field-label">单位</text>
+        <input class="input" data-field="unit" value="{{unit}}" bindinput="onTextInput" />
+      </view>
+    </view>
+    <view class="field">
+      <text class="field-label">位置</text>
+      <picker mode="selector" range="{{locationNames}}" value="{{locationPickerIndex}}" bindchange="onLocationChange">
+        <view class="input picker-value">
+          <text class="picker-text">{{locationLabel}}</text>
+          <text class="picker-caret">⌄</text>
+        </view>
+      </picker>
+    </view>
+    <view class="field">
+      <text class="field-label">生产日期</text>
+      <picker mode="date" value="{{productionDatePickerValue}}" bindchange="onDateChange" data-field="productionDate">
+        <view class="input picker-value">
+          <text class="picker-text">{{productionDateLabel}}</text>
+          <text class="picker-caret">›</text>
+        </view>
+      </picker>
+    </view>
+    <view class="field">
+      <text class="field-label">品牌</text>
+      <input class="input" data-field="brand" value="{{brand}}" bindinput="onTextInput" />
+    </view>
+    <view class="field">
+      <text class="field-label">规格</text>
+      <input class="input" data-field="specification" value="{{specification}}" bindinput="onTextInput" />
+    </view>
+    <view class="field">
+      <text class="field-label">条码</text>
+      <input class="input" data-field="barcode" value="{{barcode}}" bindinput="onTextInput" />
+    </view>
+    <view class="field">
+      <text class="field-label">备注</text>
+      <textarea class="input textarea" data-field="note" value="{{note}}" bindinput="onTextInput" />
+    </view>
   </view>
-  <text wx:if="{{errors.quantity}}" class="error">{{errors.quantity}}</text>
-  <view class="save-bar"><button class="primary-button" loading="{{saving}}" disabled="{{saving || loadingOptions || optionError}}" bindtap="save">{{loadingOptions ? '正在准备' : saving ? '正在保存' : '保存物品'}}</button></view>
+
+  <text wx:if="{{errors.quantity}}" class="error form-error-text">{{errors.quantity}}</text>
+
+  <view class="save-bar">
+    <button class="primary-button" loading="{{saving}}" disabled="{{saveDisabled}}" bindtap="save">{{saveLabel}}</button>
+  </view>
 </view>

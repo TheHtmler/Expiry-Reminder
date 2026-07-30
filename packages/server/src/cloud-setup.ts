@@ -8,6 +8,7 @@ export const REQUIRED_COLLECTIONS = [
   "locations",
   "items",
   "item_events",
+  "product_catalog",
 ] as const;
 
 interface CollectionAdmin {

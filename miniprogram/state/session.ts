@@ -99,3 +99,41 @@ export const sessionState = createSessionState({
 export function getCurrentHouseholdId(): string | null {
   return sessionState.currentHouseholdId;
 }
+
+/** 跨 Tab 传递一次性导航参数（switchTab 不支持 query）。 */
+let pendingItemsKeyword = "";
+
+export function setPendingItemsKeyword(keyword: string) {
+  pendingItemsKeyword = keyword.trim();
+}
+
+export function takePendingItemsKeyword(): string {
+  const keyword = pendingItemsKeyword;
+  pendingItemsKeyword = "";
+  return keyword;
+}
+
+/** 扫码匹配结果，供录入页一次性预填。 */
+export interface ScanPrefill {
+  barcode: string;
+  name?: string;
+  brand?: string;
+  specification?: string;
+  imageFileId?: string;
+  categorySystemKey?: string;
+  defaultThresholdDays?: number;
+  source?: "household" | "public" | "none";
+  entryMethod: "scan";
+}
+
+let pendingScanPrefill: ScanPrefill | null = null;
+
+export function setPendingScanPrefill(prefill: ScanPrefill) {
+  pendingScanPrefill = prefill;
+}
+
+export function takePendingScanPrefill(): ScanPrefill | null {
+  const prefill = pendingScanPrefill;
+  pendingScanPrefill = null;
+  return prefill;
+}

@@ -1,11 +1,22 @@
 <view class="page">
-  <view class="page-heading"><text class="page-title">家庭成员</text><text class="page-subtitle">{{members.length}} 位有效成员</text></view>
+  <view class="page-heading">
+    <view class="page-heading-main">
+      <text class="page-title">家庭成员</text>
+      <text class="page-subtitle">{{members.length}} 位有效成员</text>
+    </view>
+  </view>
   <button wx:if="{{isAdmin}}" class="primary-button invite" bindtap="onInvite">＋ 邀请成员</button>
   <view wx:if="{{!loading && members.length === 0}}" class="empty-state"><view class="empty-mark">人</view><text class="empty-title">暂无家庭成员</text></view>
   <view class="list-surface" wx:if="{{members.length > 0}}">
     <view wx:for="{{members}}" wx:key="userId" class="member list-row">
-      <view class="member-main"><view class="avatar">{{item.isSelf ? '我' : '员'}}</view><view><text class="member-name">{{item.isSelf ? '我' : '家庭成员'}}</text><text class="role">{{item.role === 'admin' ? '管理员' : '成员'}} · {{item.joinedAt}}</text></view></view>
-      <button wx:if="{{isAdmin && !item.isSelf}}" class="remove" size="mini" data-id="{{item.userId}}" bindtap="onRemove">移除</button>
+      <view class="row-main">
+        <view class="avatar">{{item.isSelf ? '我' : '员'}}</view>
+        <view class="row-text">
+          <text class="row-title">{{item.isSelf ? '我' : '家庭成员'}}</text>
+          <text class="row-meta">{{item.role === 'admin' ? '管理员' : '成员'}} · {{item.joinedAt}}</text>
+        </view>
+      </view>
+      <view wx:if="{{isAdmin && !item.isSelf}}" class="remove" hover-class="btn-hover" data-id="{{item.userId}}" bindtap="onRemove">移除</view>
     </view>
   </view>
 </view>

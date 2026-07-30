@@ -102,6 +102,21 @@ export interface ItemEventRecord {
   status: ItemRecord["status"];
 }
 
+export interface CatalogRecord {
+  id: string;
+  scope: "public" | "household";
+  householdId: string | null;
+  barcode: string;
+  name: string;
+  brand?: string;
+  specification?: string;
+  imageFileId?: string;
+  categorySystemKey?: string;
+  defaultThresholdDays?: number;
+  defaultShelfLifeDays?: number;
+  updatedAt: string;
+}
+
 export interface UserRepository {
   findByOpenId(openId: string): Promise<UserRecord | null>;
   insert(record: UserRecord): Promise<void>;
@@ -176,6 +191,15 @@ export interface ItemEventRepository {
   updateByItem(itemId: string, patch: Partial<ItemEventRecord>): Promise<void>;
 }
 
+export interface CatalogRepository {
+  findHousehold(
+    householdId: string,
+    barcode: string,
+  ): Promise<CatalogRecord | null>;
+  findPublic(barcode: string): Promise<CatalogRecord | null>;
+  upsert(record: CatalogRecord): Promise<void>;
+}
+
 export interface Repositories {
   users: UserRepository;
   households: HouseholdRepository;
@@ -186,6 +210,7 @@ export interface Repositories {
   locations: LocationRepository;
   items: ItemRepository;
   itemEvents: ItemEventRepository;
+  catalog: CatalogRepository;
   transaction<T>(work: (repos: Repositories) => Promise<T>): Promise<T>;
 }
 
@@ -468,6 +493,30 @@ export function createCloudBaseRepositories(
           .collection<ItemEventRecord>("item_events")
           .where({ itemId })
           .update({ data: update });
+      },
+    },
+    catalog: {
+      async findHousehold(householdId, barcode) {
+        const result = await store
+          .collection<CatalogRecord>("product_catalog")
+          .where({ scope: "household", householdId, barcode })
+          .limit(1)
+          .get();
+        return result.data[0] ?? null;
+      },
+      async findPublic(barcode) {
+        const result = await store
+          .collection<CatalogRecord>("product_catalog")
+          .where({ scope: "public", barcode })
+          .limit(1)
+          .get();
+        return result.data[0] ?? null;
+      },
+      async upsert(record) {
+        await store
+          .collection<CatalogRecord>("product_catalog")
+          .doc(record.id)
+          .set({ data: record });
       },
     },
     async transaction(work) {

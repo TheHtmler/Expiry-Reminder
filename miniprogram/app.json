@@ -16,13 +16,15 @@
   ],
   "window": {
     "navigationBarTitleText": "到期咯",
-    "navigationBarBackgroundColor": "#F7F8F5",
+    "navigationBarBackgroundColor": "#F2F6F3",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F7F8F5"
+    "backgroundColor": "#F2F6F3"
   },
   "tabBar": {
-    "color": "#687068",
-    "selectedColor": "#D85F42",
+    "color": "#8A968E",
+    "selectedColor": "#2F8F62",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
     "list": [
       { "pagePath": "pages/home/index", "text": "首页", "iconPath": "assets/tabbar/house.png", "selectedIconPath": "assets/tabbar/house-active.png" },
       { "pagePath": "pages/items/index", "text": "物品", "iconPath": "assets/tabbar/package.png", "selectedIconPath": "assets/tabbar/package-active.png" },

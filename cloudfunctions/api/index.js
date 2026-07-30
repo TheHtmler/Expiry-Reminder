@@ -213,7 +213,8 @@ var REQUIRED_COLLECTIONS = [
   "categories",
   "locations",
   "items",
-  "item_events"
+  "item_events",
+  "product_catalog"
 ];
 function errorMessage(error) {
   if (error instanceof Error) return error.message;
@@ -454,7 +455,7 @@ var HouseholdService = class _HouseholdService {
     const name = input.name === void 0 ? household.name : input.name.trim();
     const timezone = input.timezone ?? household.timezone;
     const reminderHour = input.reminderHour ?? household.reminderHour;
-    if (!name || !isValidTimezone(timezone) || !Number.isInteger(reminderHour) || reminderHour < 8 || reminderHour > 20) {
+    if (!name || !isValidTimezone(timezone) || !Number.isInteger(reminderHour) || reminderHour < 0 || reminderHour > 23) {
       throw new ServiceError("VALIDATION_ERROR", "\u5BB6\u5EAD\u8BBE\u7F6E\u65E0\u6548");
     }
     const update = { name, timezone, reminderHour };
@@ -624,6 +625,107 @@ function changeQuantity(current, delta) {
   return { quantity, exhausted: quantity === 0 };
 }
 
+// packages/server/src/catalog/service.ts
+function normalizeLocationId(locationId) {
+  const value = locationId?.trim();
+  return value ? value : void 0;
+}
+function toMatchDto(record, source) {
+  return {
+    barcode: record.barcode,
+    name: record.name,
+    brand: record.brand,
+    specification: record.specification,
+    imageFileId: record.imageFileId,
+    categorySystemKey: record.categorySystemKey,
+    defaultThresholdDays: record.defaultThresholdDays,
+    defaultShelfLifeDays: record.defaultShelfLifeDays,
+    source
+  };
+}
+var CatalogService = class {
+  constructor(repos) {
+    this.repos = repos;
+  }
+  async rememberHouseholdProduct(householdId, product) {
+    const barcode = product.barcode.trim();
+    const name = product.name.trim();
+    if (!barcode || !name) return;
+    const existing = await this.repos.catalog.findHousehold(householdId, barcode);
+    const id = existing?.id ?? `household_${householdId}_${barcode}`;
+    await this.repos.catalog.upsert({
+      id,
+      scope: "household",
+      householdId,
+      barcode,
+      name,
+      brand: product.brand,
+      specification: product.specification,
+      imageFileId: product.imageFileId,
+      categorySystemKey: product.categorySystemKey ?? existing?.categorySystemKey,
+      defaultThresholdDays: product.defaultThresholdDays ?? existing?.defaultThresholdDays,
+      defaultShelfLifeDays: existing?.defaultShelfLifeDays,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+  }
+  async lookup(actor, householdId, code) {
+    await this.assertActiveMember(actor, householdId);
+    const barcode = code.trim();
+    if (!barcode) {
+      throw new ServiceError("VALIDATION_ERROR", "\u6761\u7801\u4E0D\u80FD\u4E3A\u7A7A");
+    }
+    const household = await this.repos.catalog.findHousehold(
+      householdId,
+      barcode
+    );
+    if (household) return toMatchDto(household, "household");
+    const publicProduct = await this.repos.catalog.findPublic(barcode);
+    if (publicProduct) return toMatchDto(publicProduct, "public");
+    return null;
+  }
+  async lookupByInput(actor, input) {
+    return this.lookup(actor, input.householdId, input.code);
+  }
+  async findMergeCandidate(actor, input) {
+    await this.assertActiveMember(actor, input.householdId);
+    const barcode = input.barcode.trim();
+    const expiryDate = input.expiryDate.trim();
+    if (!barcode || !expiryDate) {
+      throw new ServiceError("VALIDATION_ERROR", "\u5408\u5E76\u6BD4\u5BF9\u4FE1\u606F\u4E0D\u5B8C\u6574");
+    }
+    const locationId = normalizeLocationId(input.locationId);
+    const items = await this.repos.items.listByHousehold(input.householdId);
+    for (const item of items) {
+      if (item.deletedAt !== null) continue;
+      if ((item.barcode ?? "").trim() !== barcode) continue;
+      if (normalizeLocationId(item.locationId) !== locationId) continue;
+      const events = await this.repos.itemEvents.listByItem(item.id);
+      const hasExpiry = events.some(
+        (event) => event.type === "expiry" && event.date === expiryDate
+      );
+      if (!hasExpiry && item.nearestEventDate !== expiryDate) continue;
+      return {
+        itemId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        version: item.version,
+        barcode,
+        locationId: item.locationId,
+        nearestEventDate: item.nearestEventDate
+      };
+    }
+    return null;
+  }
+  async assertActiveMember(actor, householdId) {
+    const member = await this.repos.members.find(householdId, actor.userId);
+    if (!member || member.status !== "active") {
+      throw new ServiceError("FORBIDDEN", "\u65E0\u6743\u8BBF\u95EE\u8BE5\u5BB6\u5EAD");
+    }
+    return member;
+  }
+};
+
 // packages/server/src/items/validation.ts
 var ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 function isValidDate(value) {
@@ -720,7 +822,9 @@ var ItemService = class {
     if (!stored || typeof stored.value !== "string") {
       throw new ServiceError("INTERNAL_ERROR", "\u7269\u54C1\u4FDD\u5B58\u5931\u8D25");
     }
-    return this.getDetailUnchecked(stored.value, input.householdId);
+    const detail = await this.getDetailUnchecked(stored.value, input.householdId);
+    await this.rememberCatalog(detail);
+    return detail;
   }
   async updateItem(actor, input) {
     await this.assertMember(actor, input.householdId);
@@ -761,7 +865,9 @@ var ItemService = class {
       await repos.items.update(existing.id, update);
       if (input.events) await repos.itemEvents.replaceByItem(existing.id, events);
     });
-    return this.getDetailUnchecked(existing.id, input.householdId);
+    const detail = await this.getDetailUnchecked(existing.id, input.householdId);
+    await this.rememberCatalog(detail);
+    return detail;
   }
   async changeQuantity(actor, input) {
     await this.assertMember(actor, input.householdId);
@@ -1020,6 +1126,23 @@ var ItemService = class {
     }
     return location;
   }
+  async rememberCatalog(detail) {
+    if (!detail.barcode?.trim()) return;
+    const category = await this.repos.categories.findById(detail.categoryId);
+    const expiry = detail.events.find((event) => event.type === "expiry");
+    await new CatalogService(this.repos).rememberHouseholdProduct(
+      detail.householdId,
+      {
+        barcode: detail.barcode,
+        name: detail.name,
+        brand: detail.brand,
+        specification: detail.specification,
+        imageFileId: detail.imageFileId,
+        categorySystemKey: category?.systemKey,
+        defaultThresholdDays: expiry?.thresholdDays
+      }
+    );
+  }
   async assertMember(actor, householdId) {
     const member = await this.repos.members.find(householdId, actor.userId);
     if (!member || member.status !== "active") {
@@ -1174,6 +1297,19 @@ function createCloudBaseRepositories(store, rootStore = store) {
       },
       async updateByItem(itemId, update) {
         await store.collection("item_events").where({ itemId }).update({ data: update });
+      }
+    },
+    catalog: {
+      async findHousehold(householdId, barcode) {
+        const result = await store.collection("product_catalog").where({ scope: "household", householdId, barcode }).limit(1).get();
+        return result.data[0] ?? null;
+      },
+      async findPublic(barcode) {
+        const result = await store.collection("product_catalog").where({ scope: "public", barcode }).limit(1).get();
+        return result.data[0] ?? null;
+      },
+      async upsert(record) {
+        await store.collection("product_catalog").doc(record.id).set({ data: record });
       }
     },
     async transaction(work) {
@@ -1358,6 +1494,20 @@ function createRouter(services) {
               request.payload
             )
           );
+        case "catalog.lookup":
+          return ok(
+            await services.catalog.lookupByInput(
+              context.actor,
+              request.payload
+            )
+          );
+        case "catalog.findMergeCandidate":
+          return ok(
+            await services.catalog.findMergeCandidate(
+              context.actor,
+              request.payload
+            )
+          );
         default:
           return fail("NOT_FOUND", "\u672A\u77E5\u64CD\u4F5C");
       }
@@ -1389,7 +1539,8 @@ function getRuntime() {
       households: new HouseholdService(repos),
       categories,
       locations: new LocationService(repos),
-      items: new ItemService(repos)
+      items: new ItemService(repos),
+      catalog: new CatalogService(repos)
     })
   };
   return runtime;

@@ -69,6 +69,7 @@ export interface CategoryView {
   icon: string;
   color: string;
   source: "system" | "custom";
+  systemKey?: string;
   hidden: boolean;
   sortOrder: number;
 }

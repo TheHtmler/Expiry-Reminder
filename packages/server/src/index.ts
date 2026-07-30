@@ -8,6 +8,7 @@ import { ServiceError } from "./context";
 import { HouseholdService, SessionService } from "./households/service";
 import { LocationService } from "./locations/service";
 import { ItemService } from "./items/service";
+import { CatalogService } from "./catalog/service";
 import {
   createCloudBaseRepositories,
   type CloudStore,
@@ -53,6 +54,7 @@ function getRuntime() {
       categories,
       locations: new LocationService(repos),
       items: new ItemService(repos),
+      catalog: new CatalogService(repos),
     }),
   };
   return runtime;

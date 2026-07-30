@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "物品详情", "usingComponents": { "quantity-stepper": "/components/quantity-stepper/index" } }
+{
+  "navigationBarTitleText": "物品详情",
+  "usingComponents": {
+    "quantity-stepper": "/components/quantity-stepper/index"
+  }
+}

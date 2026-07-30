@@ -1,20 +1,45 @@
 <view class="page">
-  <view class="page-heading"><text class="page-title">分类管理</text><text class="page-subtitle">{{categories.length}} 个分类</text></view>
+  <view class="page-heading">
+    <view class="page-heading-main">
+      <text class="page-title">分类管理</text>
+      <text class="page-subtitle">{{categories.length}} 个分类</text>
+    </view>
+  </view>
   <view wx:if="{{isAdmin}}" class="editor">
     <view class="section-heading"><text>新增分类</text></view>
     <view class="field"><text class="field-label">分类名称</text><input class="input" value="{{name}}" bindinput="onNameInput" maxlength="12" /></view>
-    <text class="field-label">图标</text><view class="choice-row"><button class="choice {{icon === 'food' ? 'active' : ''}}" data-icon="food" bindtap="setIcon">食</button><button class="choice {{icon === 'medicine' ? 'active' : ''}}" data-icon="medicine" bindtap="setIcon">药</button><button class="choice {{icon === 'beauty' ? 'active' : ''}}" data-icon="beauty" bindtap="setIcon">美</button><button class="choice {{icon === 'digital' ? 'active' : ''}}" data-icon="digital" bindtap="setIcon">数</button><button class="choice {{icon === 'other' ? 'active' : ''}}" data-icon="other" bindtap="setIcon">其</button></view>
-    <text class="field-label color-label">颜色</text><view class="choice-row colors"><button class="color-choice {{color === '#D85F42' ? 'active' : ''}}" style="background:#D85F42" data-color="#D85F42" bindtap="setColor" aria-label="珊瑚红"></button><button class="color-choice {{color === '#3F684F' ? 'active' : ''}}" style="background:#3F684F" data-color="#3F684F" bindtap="setColor" aria-label="森林绿"></button><button class="color-choice {{color === '#AD641F' ? 'active' : ''}}" style="background:#AD641F" data-color="#AD641F" bindtap="setColor" aria-label="琥珀色"></button><button class="color-choice {{color === '#516A86' ? 'active' : ''}}" style="background:#516A86" data-color="#516A86" bindtap="setColor" aria-label="灰蓝色"></button><button class="color-choice {{color === '#747B74' ? 'active' : ''}}" style="background:#747B74" data-color="#747B74" bindtap="setColor" aria-label="中性灰"></button></view>
+    <text class="field-label">图标</text>
+    <view class="choice-row">
+      <view class="choice {{icon === 'food' ? 'active' : ''}}" data-icon="food" hover-class="btn-hover" bindtap="setIcon">食</view>
+      <view class="choice {{icon === 'medicine' ? 'active' : ''}}" data-icon="medicine" hover-class="btn-hover" bindtap="setIcon">药</view>
+      <view class="choice {{icon === 'beauty' ? 'active' : ''}}" data-icon="beauty" hover-class="btn-hover" bindtap="setIcon">美</view>
+      <view class="choice {{icon === 'digital' ? 'active' : ''}}" data-icon="digital" hover-class="btn-hover" bindtap="setIcon">数</view>
+      <view class="choice {{icon === 'other' ? 'active' : ''}}" data-icon="other" hover-class="btn-hover" bindtap="setIcon">其</view>
+    </view>
+    <text class="field-label color-label">颜色</text>
+    <view class="choice-row colors">
+      <view class="color-choice {{color === '#2F8F62' ? 'active' : ''}}" style="background:#2F8F62" data-color="#2F8F62" hover-class="btn-hover" bindtap="setColor" aria-label="叶绿"></view>
+      <view class="color-choice {{color === '#3F684F' ? 'active' : ''}}" style="background:#3F684F" data-color="#3F684F" hover-class="btn-hover" bindtap="setColor" aria-label="森林绿"></view>
+      <view class="color-choice {{color === '#AD641F' ? 'active' : ''}}" style="background:#AD641F" data-color="#AD641F" hover-class="btn-hover" bindtap="setColor" aria-label="琥珀色"></view>
+      <view class="color-choice {{color === '#516A86' ? 'active' : ''}}" style="background:#516A86" data-color="#516A86" hover-class="btn-hover" bindtap="setColor" aria-label="灰蓝色"></view>
+      <view class="color-choice {{color === '#747B74' ? 'active' : ''}}" style="background:#747B74" data-color="#747B74" hover-class="btn-hover" bindtap="setColor" aria-label="中性灰"></view>
+    </view>
     <button class="primary-button" bindtap="onCreate">新增分类</button>
   </view>
   <view class="section-heading category-heading"><text>现有分类</text><text class="section-caption">显示与排序</text></view>
   <view class="list-surface">
     <view wx:for="{{categories}}" wx:key="id" class="category list-row">
-      <view class="category-main"><view class="category-icon" style="background: {{item.color}}">{{item.icon === 'food' ? '食' : item.icon === 'medicine' ? '药' : item.icon === 'beauty' ? '美' : item.icon === 'digital' ? '数' : '类'}}</view><view><text class="row-title">{{item.name}}</text><text class="row-meta">{{item.source === 'system' ? '系统分类' : '自定义分类'}}{{item.hidden ? ' · 已隐藏' : ''}}</text></view></view>
+      <view class="row-main">
+        <view class="category-icon" style="background: {{item.color}}">{{item.icon === 'food' ? '食' : item.icon === 'medicine' ? '药' : item.icon === 'beauty' ? '美' : item.icon === 'digital' ? '数' : '类'}}</view>
+        <view class="row-text">
+          <text class="row-title">{{item.name}}</text>
+          <text class="row-meta">{{item.source === 'system' ? '系统分类' : '自定义分类'}}{{item.hidden ? ' · 已隐藏' : ''}}</text>
+        </view>
+      </view>
       <view wx:if="{{isAdmin}}" class="actions">
-        <button size="mini" data-id="{{item.id}}" data-offset="-1" bindtap="onMove" aria-label="上移">↑</button>
-        <button size="mini" data-id="{{item.id}}" data-offset="1" bindtap="onMove" aria-label="下移">↓</button>
-        <switch checked="{{!item.hidden}}" data-index="{{index}}" bindchange="onToggle" aria-label="显示分类" />
+        <view class="icon-button" data-id="{{item.id}}" data-offset="-1" hover-class="btn-hover" bindtap="onMove" aria-label="上移">↑</view>
+        <view class="icon-button" data-id="{{item.id}}" data-offset="1" hover-class="btn-hover" bindtap="onMove" aria-label="下移">↓</view>
+        <switch checked="{{!item.hidden}}" color="#2F8F62" data-index="{{index}}" bindchange="onToggle" aria-label="显示分类" />
       </view>
       <text wx:else class="muted">{{item.hidden ? '已隐藏' : '显示中'}}</text>
     </view>

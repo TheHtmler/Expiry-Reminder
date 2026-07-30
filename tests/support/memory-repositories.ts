@@ -1,4 +1,5 @@
 import type {
+  CatalogRecord,
   CategoryRecord,
   HouseholdRecord,
   IdempotencyRecord,
@@ -21,7 +22,19 @@ interface MemoryState {
   locations: Map<string, LocationRecord>;
   items: Map<string, ItemRecord>;
   itemEvents: Map<string, ItemEventRecord>;
+  catalog: Map<string, CatalogRecord>;
 }
+
+type CatalogSeed = {
+  barcode: string;
+  name: string;
+  brand?: string;
+  specification?: string;
+  imageFileId?: string;
+  categorySystemKey?: string;
+  defaultThresholdDays?: number;
+  defaultShelfLifeDays?: number;
+};
 
 const memberKey = (householdId: string, userId: string) =>
   `${householdId}:${userId}`;
@@ -37,11 +50,16 @@ function cloneState(state: MemoryState): MemoryState {
     locations: structuredClone(state.locations),
     items: structuredClone(state.items),
     itemEvents: structuredClone(state.itemEvents),
+    catalog: structuredClone(state.catalog),
   };
 }
 
 export function createMemoryRepositories(): Repositories & {
   invites: Repositories["invites"] & { count(): Promise<number> };
+  catalog: Repositories["catalog"] & {
+    seedPublic(input: CatalogSeed): void;
+    seedHousehold(input: CatalogSeed & { householdId: string }): void;
+  };
 } {
   const state: MemoryState = {
     users: new Map(),
@@ -53,6 +71,7 @@ export function createMemoryRepositories(): Repositories & {
     locations: new Map(),
     items: new Map(),
     itemEvents: new Map(),
+    catalog: new Map(),
   };
   let transactionQueue: Promise<void> = Promise.resolve();
 
@@ -264,6 +283,28 @@ export function createMemoryRepositories(): Repositories & {
         }
       },
     },
+    catalog: {
+      async findHousehold(householdId, barcode) {
+        return structuredClone(
+          [...current.catalog.values()].find(
+            (entry) =>
+              entry.scope === "household"
+              && entry.householdId === householdId
+              && entry.barcode === barcode,
+          ) ?? null,
+        );
+      },
+      async findPublic(barcode) {
+        return structuredClone(
+          [...current.catalog.values()].find(
+            (entry) => entry.scope === "public" && entry.barcode === barcode,
+          ) ?? null,
+        );
+      },
+      async upsert(record) {
+        current.catalog.set(record.id, structuredClone(record));
+      },
+    },
     async transaction(work) {
       const run = transactionQueue.then(async () => {
         const transactionState = cloneState(current);
@@ -277,6 +318,7 @@ export function createMemoryRepositories(): Repositories & {
         current.locations = transactionState.locations;
         current.items = transactionState.items;
         current.itemEvents = transactionState.itemEvents;
+        current.catalog = transactionState.catalog;
         return result;
       });
       transactionQueue = run.then(
@@ -291,5 +333,39 @@ export function createMemoryRepositories(): Repositories & {
     typeof createMemoryRepositories
   >;
   repos.invites.count = async () => state.invites.size;
+  repos.catalog.seedPublic = (input) => {
+    const id = `public_${input.barcode}`;
+    state.catalog.set(id, {
+      id,
+      scope: "public",
+      householdId: null,
+      barcode: input.barcode,
+      name: input.name,
+      brand: input.brand,
+      specification: input.specification,
+      imageFileId: input.imageFileId,
+      categorySystemKey: input.categorySystemKey,
+      defaultThresholdDays: input.defaultThresholdDays,
+      defaultShelfLifeDays: input.defaultShelfLifeDays,
+      updatedAt: "2026-07-29T00:00:00.000Z",
+    });
+  };
+  repos.catalog.seedHousehold = (input) => {
+    const id = `household_${input.householdId}_${input.barcode}`;
+    state.catalog.set(id, {
+      id,
+      scope: "household",
+      householdId: input.householdId,
+      barcode: input.barcode,
+      name: input.name,
+      brand: input.brand,
+      specification: input.specification,
+      imageFileId: input.imageFileId,
+      categorySystemKey: input.categorySystemKey,
+      defaultThresholdDays: input.defaultThresholdDays,
+      defaultShelfLifeDays: input.defaultShelfLifeDays,
+      updatedAt: "2026-07-29T00:00:00.000Z",
+    });
+  };
   return repos;
 }

@@ -23,6 +23,8 @@ export const API_ACTIONS = [
   "item.delete",
   "item.restore",
   "item.bulkMoveCategory",
+  "catalog.lookup",
+  "catalog.findMergeCandidate",
   "reminder.list",
   "reminder.markRead",
   "media.tempUrl",

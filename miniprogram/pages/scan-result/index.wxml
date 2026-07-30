@@ -1,0 +1,26 @@
+<view class="page scan-result-page">
+  <view wx:if="{{loading}}" class="empty-state">
+    <icon type="waiting" size="32" color="#2F8F62" />
+    <text class="empty-title">正在匹配商品</text>
+  </view>
+
+  <view wx:elif="{{error}}" class="error-state">
+    <text>{{error}}</text>
+    <view class="error-retry" hover-class="btn-hover" bindtap="retry">重新匹配</view>
+  </view>
+
+  <block wx:else>
+    <view class="result-card">
+      <text class="result-kicker">{{sourceLabel}}</text>
+      <text class="result-name">{{name || '未识别到商品名称'}}</text>
+      <text class="result-meta">条码 {{barcode}}</text>
+      <text wx:if="{{brand}}" class="result-meta">品牌 {{brand}}</text>
+      <text wx:if="{{specification}}" class="result-meta">规格 {{specification}}</text>
+      <text class="result-hint">{{hint}}</text>
+    </view>
+    <view class="result-actions">
+      <view class="btn-primary" hover-class="btn-hover" bindtap="continueEntry">继续录入</view>
+      <view class="btn-secondary" hover-class="btn-hover" bindtap="rescan">重新扫码</view>
+    </view>
+  </block>
+</view>

@@ -337,8 +337,8 @@ export class HouseholdService {
       !name ||
       !isValidTimezone(timezone) ||
       !Number.isInteger(reminderHour) ||
-      reminderHour < 8 ||
-      reminderHour > 20
+      reminderHour < 0 ||
+      reminderHour > 23
     ) {
       throw new ServiceError("VALIDATION_ERROR", "家庭设置无效");
     }

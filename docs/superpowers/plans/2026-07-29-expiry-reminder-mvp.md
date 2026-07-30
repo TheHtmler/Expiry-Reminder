@@ -262,7 +262,7 @@ export default defineConfig({
   },
   "tabBar": {
     "color": "#687068",
-    "selectedColor": "#D85F42",
+    "selectedColor": "#2F8F62",
     "list": [
       {"pagePath": "pages/home/index", "text": "首页"},
       {"pagePath": "pages/items/index", "text": "物品"},
@@ -1449,7 +1449,7 @@ git commit -m "feat: add item management interface"
   - `lookupProduct(actor, householdId, code): Promise<ProductMatchDto | null>`
   - `findMergeCandidate(actor, input): Promise<MergeCandidateDto | null>`
 
-- [ ] **Step 1: 写扫码适配器失败测试**
+- [x] **Step 1: 写扫码适配器失败测试**
 
 ```ts
 it("只接受条形码和二维码结果", async () => {
@@ -1470,7 +1470,7 @@ it("用户取消扫码不显示系统错误", async () => {
 });
 ```
 
-- [ ] **Step 2: 写商品资料优先级失败测试**
+- [x] **Step 2: 写商品资料优先级失败测试**
 
 ```ts
 it("家庭修正资料优先于公共商品资料", async () => {
@@ -1483,13 +1483,13 @@ it("家庭修正资料优先于公共商品资料", async () => {
 });
 ```
 
-- [ ] **Step 3: 运行测试并确认失败**
+- [x] **Step 3: 运行测试并确认失败**
 
 Run: `npm test -- tests/server/catalog.test.ts tests/integration/scanner.test.ts`
 
 Expected: FAIL，提示扫码或目录模块不存在。
 
-- [ ] **Step 4: 实现扫码与商品匹配**
+- [x] **Step 4: 实现扫码与商品匹配**
 
 扫码调用固定为：
 
@@ -1502,7 +1502,7 @@ wx.scanCode({
 
 匹配顺序固定为：家庭修正资料 → 公共商品资料 → 无匹配。无匹配时保留扫码值并打开手动录入，不阻断用户。
 
-- [ ] **Step 5: 实现合并提示但不自动合并**
+- [x] **Step 5: 实现合并提示但不自动合并**
 
 仅当 `householdId + barcode + expiryDate + locationId` 完全相同时返回候选记录。弹窗文案固定为：
 
@@ -1512,7 +1512,7 @@ wx.scanCode({
 
 按钮固定为“增加数量”“保存新记录”“取消”。
 
-- [ ] **Step 6: 运行测试与真机扫码**
+- [x] **Step 6: 运行测试与真机扫码**
 
 Run: `npm test -- tests/server/catalog.test.ts tests/integration/scanner.test.ts`
 

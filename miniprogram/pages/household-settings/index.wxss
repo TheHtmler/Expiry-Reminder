@@ -1,4 +1,19 @@
-.form-surface { padding: 6rpx 24rpx 28rpx; border: 1rpx solid #dce1da; border-radius: 8rpx; background: #fff; }
-.picker-value { display: flex; justify-content: space-between; }.picker-value text { color: #8a928a; }
-.settings-section { margin-top: 34rpx; }.settings-section .secondary-button { margin-top: 16rpx; }
-.danger-zone { padding-top: 28rpx; border-top: 1rpx solid #dce1da; }
+.form-surface {
+  padding: 6rpx 24rpx 28rpx;
+  border: 1rpx solid #d7e2da;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.settings-section {
+  margin-top: 34rpx;
+}
+
+.settings-section .secondary-button {
+  margin-top: 16rpx;
+}
+
+.danger-zone {
+  padding-top: 28rpx;
+  border-top: 1rpx solid #d7e2da;
+}

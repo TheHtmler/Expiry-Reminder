@@ -29,6 +29,11 @@ import type {
   UpdateItemInput,
 } from "../../contracts/src/items";
 import type { ItemService } from "./items/service";
+import type {
+  CatalogLookupInput,
+  MergeCandidateInput,
+} from "../../contracts/src/catalog";
+import type { CatalogService } from "./catalog/service";
 
 export interface Services {
   session: SessionService;
@@ -36,6 +41,7 @@ export interface Services {
   categories: CategoryService;
   locations: LocationService;
   items: ItemService;
+  catalog: CatalogService;
 }
 
 export function createRouter(services: Services) {
@@ -201,6 +207,20 @@ export function createRouter(services: Services) {
             await services.items.bulkMoveCategory(
               context.actor,
               request.payload as unknown as BulkMoveCategoryInput,
+            ),
+          );
+        case "catalog.lookup":
+          return ok(
+            await services.catalog.lookupByInput(
+              context.actor,
+              request.payload as unknown as CatalogLookupInput,
+            ),
+          );
+        case "catalog.findMergeCandidate":
+          return ok(
+            await services.catalog.findMergeCandidate(
+              context.actor,
+              request.payload as unknown as MergeCandidateInput,
             ),
           );
         default:

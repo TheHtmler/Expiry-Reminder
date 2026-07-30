@@ -94,9 +94,36 @@ describe("HouseholdService", () => {
       service.updateSettings(adminActor, {
         householdId: "h1",
         timezone: "Invalid/Timezone",
-        reminderHour: 21,
+        reminderHour: 9,
       }),
     ).rejects.toThrow("家庭设置无效");
+    await expect(
+      service.updateSettings(adminActor, {
+        householdId: "h1",
+        reminderHour: 24,
+      }),
+    ).rejects.toThrow("家庭设置无效");
+  });
+
+  it("允许 0 至 23 点的每日提醒时间", async () => {
+    await expect(
+      service.updateSettings(adminActor, {
+        householdId: "h1",
+        reminderHour: 0,
+      }),
+    ).resolves.toMatchObject({ reminderHour: 0 });
+    await expect(
+      service.updateSettings(adminActor, {
+        householdId: "h1",
+        reminderHour: 21,
+      }),
+    ).resolves.toMatchObject({ reminderHour: 21 });
+    await expect(
+      service.updateSettings(adminActor, {
+        householdId: "h1",
+        reminderHour: 23,
+      }),
+    ).resolves.toMatchObject({ reminderHour: 23 });
   });
 });
 

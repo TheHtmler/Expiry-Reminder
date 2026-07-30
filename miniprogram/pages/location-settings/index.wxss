@@ -1,2 +1,32 @@
-.editor { padding: 22rpx 24rpx 28rpx; border: 1rpx solid #dce1da; border-radius: 8rpx; background: #fff; }.location-heading { margin-top: 34rpx; }.location { min-height: 112rpx; }.location-main { display: flex; align-items: center; gap: 18rpx; }.location-mark { display: flex; align-items: center; justify-content: center; width: 56rpx; height: 56rpx; border-radius: 8rpx; background: #e4ede4; color: #3f684f; font-size: 22rpx; font-weight: 700; }
-.actions { display: flex; align-items: center; gap: 8rpx; }.actions button { width: 52rpx; min-width: 52rpx; height: 52rpx; margin: 0; padding: 0; background: #f7f8f6; line-height: 48rpx; }
+.editor {
+  padding: 22rpx 24rpx 28rpx;
+  border: 1rpx solid #d7e2da;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.location-heading {
+  margin-top: 34rpx;
+}
+
+.location-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 14rpx;
+  background: #e3f2ea;
+  color: #246b4a;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 8rpx;
+}

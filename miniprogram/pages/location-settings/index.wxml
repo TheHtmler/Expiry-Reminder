@@ -1,5 +1,10 @@
 <view class="page">
-  <view class="page-heading"><text class="page-title">位置管理</text><text class="page-subtitle">{{locations.length}} 个存放位置</text></view>
+  <view class="page-heading">
+    <view class="page-heading-main">
+      <text class="page-title">位置管理</text>
+      <text class="page-subtitle">{{locations.length}} 个存放位置</text>
+    </view>
+  </view>
   <view wx:if="{{isAdmin}}" class="editor">
     <view class="section-heading"><text>新增位置</text></view>
     <view class="field"><text class="field-label">位置名称</text><input class="input" value="{{name}}" bindinput="onNameInput" maxlength="12" placeholder="例如：冰箱" /></view>
@@ -9,11 +14,17 @@
   <view class="section-heading location-heading" wx:if="{{locations.length > 0}}"><text>现有位置</text><text class="section-caption">显示与排序</text></view>
   <view class="list-surface" wx:if="{{locations.length > 0}}">
     <view wx:for="{{locations}}" wx:key="id" class="location list-row">
-      <view class="location-main"><view class="location-mark">位</view><view><text class="row-title">{{item.name}}</text><text class="row-meta">{{item.hidden ? '已隐藏' : '显示中'}}</text></view></view>
+      <view class="row-main">
+        <view class="location-mark">位</view>
+        <view class="row-text">
+          <text class="row-title">{{item.name}}</text>
+          <text class="row-meta">{{item.hidden ? '已隐藏' : '显示中'}}</text>
+        </view>
+      </view>
       <view wx:if="{{isAdmin}}" class="actions">
-        <button size="mini" data-index="{{index}}" data-offset="-1" bindtap="onMove" aria-label="上移">↑</button>
-        <button size="mini" data-index="{{index}}" data-offset="1" bindtap="onMove" aria-label="下移">↓</button>
-        <switch checked="{{!item.hidden}}" data-index="{{index}}" bindchange="onToggle" aria-label="显示位置" />
+        <view class="icon-button" data-index="{{index}}" data-offset="-1" hover-class="btn-hover" bindtap="onMove" aria-label="上移">↑</view>
+        <view class="icon-button" data-index="{{index}}" data-offset="1" hover-class="btn-hover" bindtap="onMove" aria-label="下移">↓</view>
+        <switch checked="{{!item.hidden}}" color="#2F8F62" data-index="{{index}}" bindchange="onToggle" aria-label="显示位置" />
       </view>
       <text wx:else class="muted">{{item.hidden ? '已隐藏' : '显示中'}}</text>
     </view>

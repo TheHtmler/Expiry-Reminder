@@ -1,10 +1,79 @@
 <view class="page detail-page" wx:if="{{item && !error}}">
-  <view class="detail-header"><view class="title-main"><text class="status status-{{item.status}}">{{item.status === 'expired' ? '已过期' : item.status === 'due_today' ? '今日到期' : item.status === 'near_expiry' ? '即将到期' : item.status === 'processed' ? '已处理' : '正常'}}</text><text class="name">{{item.name}}</text><text class="meta">最后更新 {{item.updatedAt}}</text></view><button class="edit-button" bindtap="edit" aria-label="编辑物品">编辑</button></view>
-  <view class="quantity-panel"><view><text class="panel-label">当前数量</text><view><text class="quantity-number">{{item.quantity}}</text><text class="unit">{{item.unit}}</text></view></view><quantity-stepper quantity="{{item.quantity}}" bind:change="onQuantityChange" /></view>
-  <view class="detail-section"><view class="section-heading"><text>日期事件</text><text class="section-caption">{{item.events.length}} 项</text></view><view class="timeline"><view wx:for="{{item.events}}" wx:key="id" class="event-row"><view class="event-dot"></view><view><text class="event-type">{{item.type === 'production' ? '生产日期' : item.type === 'expiry' ? '到期日期' : item.label || item.type}}</text><text class="event-date">{{item.date}}</text></view></view></view></view>
-  <view class="detail-section"><view class="section-heading"><text>物品资料</text></view><view class="info-list"><view><text>品牌</text><text>{{item.brand || '未填写'}}</text></view><view><text>规格</text><text>{{item.specification || '未填写'}}</text></view><view><text>条码</text><text>{{item.barcode || '未填写'}}</text></view><view><text>备注</text><text>{{item.note || '未填写'}}</text></view></view></view>
-  <button wx:if="{{item.status !== 'processed'}}" class="primary-button" bindtap="process">标记已处理</button>
-  <button wx:if="{{isAdmin}}" class="danger-action" bindtap="remove">删除物品</button>
+  <view class="detail-header">
+    <view class="title-main">
+      <text class="status status-{{item.status}}">{{item.status === 'expired' ? '已过期' : item.status === 'due_today' ? '今日到期' : item.status === 'near_expiry' ? '即将到期' : item.status === 'processed' ? '不再提醒' : '正常'}}</text>
+      <text class="name">{{item.name}}</text>
+      <text class="meta">最后更新 {{item.updatedAt}}</text>
+    </view>
+    <view class="edit-button" hover-class="btn-hover" bindtap="edit" aria-label="编辑物品">编辑</view>
+  </view>
+  <view wx:if="{{item.imageFileId}}" class="detail-photo-wrap">
+    <image class="detail-photo" src="{{item.imageFileId}}" mode="aspectFit" />
+  </view>
+  <view class="quantity-panel">
+    <view class="quantity-info">
+      <text class="panel-label">当前数量</text>
+      <view class="quantity-value"><text class="quantity-number">{{item.quantity}}</text><text class="unit">{{item.unit}}</text></view>
+    </view>
+    <text class="quantity-hint">点下方「处理」调整数量或提醒</text>
+  </view>
+  <view class="detail-section">
+    <view class="section-heading"><text>日期事件</text><text class="section-caption">{{item.events.length}} 项</text></view>
+    <view class="timeline">
+      <view wx:for="{{item.events}}" wx:key="id" class="event-row">
+        <view class="event-dot"></view>
+        <view class="event-text">
+          <text class="event-type">{{item.type === 'production' ? '生产日期' : item.type === 'expiry' ? '到期日期' : item.label || item.type}}</text>
+          <text class="event-date">{{item.date}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="detail-section">
+    <view class="section-heading"><text>物品资料</text></view>
+    <view class="info-list">
+      <view class="info-row"><text class="info-label">品牌</text><text class="info-value">{{item.brand || '未填写'}}</text></view>
+      <view class="info-row"><text class="info-label">规格</text><text class="info-value">{{item.specification || '未填写'}}</text></view>
+      <view class="info-row"><text class="info-label">条码</text><text class="info-value">{{item.barcode || '未填写'}}</text></view>
+      <view class="info-row"><text class="info-label">备注</text><text class="info-value">{{item.note || '未填写'}}</text></view>
+    </view>
+  </view>
+  <button wx:if="{{item.status !== 'processed'}}" class="primary-button" bindtap="openUpdate">处理</button>
+  <view wx:if="{{isAdmin}}" class="danger-action" hover-class="btn-hover" bindtap="remove">删除物品</view>
+
+  <view wx:if="{{updateVisible}}" class="mask" catchtouchmove="preventMove" bindtap="closeUpdate">
+    <view class="sheet" catchtap="preventMove">
+      <view class="sheet-handle"></view>
+      <text class="sheet-kicker">处理物品</text>
+      <text class="sheet-title">{{item.name}}</text>
+      <view class="section">
+        <text class="section-label">剩余数量</text>
+        <text class="section-desc">调整后点保存；减到 0 将不再提醒</text>
+        <view class="quantity-row">
+          <quantity-stepper quantity="{{draftQuantity}}" bind:change="onQuantityStep" />
+          <text class="unit-label">{{item.unit || '件'}}</text>
+        </view>
+        <view
+          class="action-btn primary {{saving || draftQuantity === item.quantity ? 'disabled' : ''}}"
+          hover-class="btn-hover"
+          bindtap="saveQuantity"
+        >保存数量</view>
+      </view>
+      <view class="section">
+        <text class="section-label">提醒</text>
+        <text class="section-desc">关闭后，家庭成员不会再收到这件物品的到期提醒</text>
+        <view wx:if="{{!confirmMute}}" class="action-btn danger" hover-class="btn-hover" bindtap="askMute">不再提醒这件物品</view>
+        <view wx:else class="confirm-box">
+          <text class="confirm-text">确认不再提醒「{{item.name}}」？</text>
+          <view class="confirm-actions">
+            <view class="action-btn ghost" hover-class="btn-hover" bindtap="cancelMute">取消</view>
+            <view class="action-btn danger" hover-class="btn-hover" bindtap="confirmMuteReminders">确认不再提醒</view>
+          </view>
+        </view>
+      </view>
+      <view class="action-btn ghost close-btn" hover-class="btn-hover" bindtap="closeUpdate">关闭</view>
+    </view>
+  </view>
 </view>
 <view wx:elif="{{loading}}" class="page empty-state"><view class="empty-mark">…</view><text class="empty-title">正在加载</text></view>
-<view wx:else class="page"><view class="error-state"><text>{{error || '物品详情暂时无法显示'}}</text><button bindtap="retry">重新加载</button></view></view>
+<view wx:else class="page"><view class="error-state"><text>{{error || '物品详情暂时无法显示'}}</text><view class="error-retry" hover-class="btn-hover" bindtap="retry">重新加载</view></view></view>

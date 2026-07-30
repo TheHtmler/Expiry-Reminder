@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { calculateEventStatus, changeQuantity } from "../../../domain/src";
+import { CatalogService } from "../catalog/service";
 import type {
   BulkMoveCategoryInput,
   ChangeQuantityInput,
@@ -109,7 +110,9 @@ export class ItemService {
     if (!stored || typeof stored.value !== "string") {
       throw new ServiceError("INTERNAL_ERROR", "物品保存失败");
     }
-    return this.getDetailUnchecked(stored.value, input.householdId);
+    const detail = await this.getDetailUnchecked(stored.value, input.householdId);
+    await this.rememberCatalog(detail);
+    return detail;
   }
 
   async updateItem(actor: Actor, input: UpdateItemInput): Promise<ItemDetailDto> {
@@ -154,7 +157,9 @@ export class ItemService {
       await repos.items.update(existing.id, update);
       if (input.events) await repos.itemEvents.replaceByItem(existing.id, events);
     });
-    return this.getDetailUnchecked(existing.id, input.householdId);
+    const detail = await this.getDetailUnchecked(existing.id, input.householdId);
+    await this.rememberCatalog(detail);
+    return detail;
   }
 
   async changeQuantity(
@@ -475,6 +480,24 @@ export class ItemService {
       throw new ServiceError("VALIDATION_ERROR", "位置不属于当前家庭");
     }
     return location;
+  }
+
+  private async rememberCatalog(detail: ItemDetailDto) {
+    if (!detail.barcode?.trim()) return;
+    const category = await this.repos.categories.findById(detail.categoryId);
+    const expiry = detail.events.find((event) => event.type === "expiry");
+    await new CatalogService(this.repos).rememberHouseholdProduct(
+      detail.householdId,
+      {
+        barcode: detail.barcode,
+        name: detail.name,
+        brand: detail.brand,
+        specification: detail.specification,
+        imageFileId: detail.imageFileId,
+        categorySystemKey: category?.systemKey,
+        defaultThresholdDays: expiry?.thresholdDays,
+      },
+    );
   }
 
   private async assertMember(actor: Actor, householdId: string) {

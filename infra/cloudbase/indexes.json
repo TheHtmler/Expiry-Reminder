@@ -66,5 +66,23 @@
       { "field": "householdId", "order": "asc" },
       { "field": "barcode", "order": "asc" }
     ]
+  },
+  {
+    "collection": "product_catalog",
+    "name": "catalog_scope_barcode",
+    "unique": false,
+    "fields": [
+      { "field": "scope", "order": "asc" },
+      { "field": "barcode", "order": "asc" }
+    ]
+  },
+  {
+    "collection": "product_catalog",
+    "name": "catalog_household_barcode",
+    "unique": false,
+    "fields": [
+      { "field": "householdId", "order": "asc" },
+      { "field": "barcode", "order": "asc" }
+    ]
   }
 ]
